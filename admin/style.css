@@ -1,0 +1,479 @@
+/* ============================================================
+   Admin Panel Styles — Antique Furniture Workshop
+   Dark theme matching the main site aesthetic
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --admin-bg: #0f0d0a;
+    --admin-surface: #1a1610;
+    --admin-surface-hover: #231f18;
+    --admin-border: #2a2520;
+    --admin-text: #e8e0d4;
+    --admin-text-muted: #8a7e6e;
+    --admin-accent: #d4a843;
+    --admin-accent-hover: #e0b84f;
+    --admin-danger: #c0392b;
+    --admin-danger-hover: #e74c3c;
+    --admin-success: #27ae60;
+    --admin-radius: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a { color: var(--admin-accent); text-decoration: none; }
+a:hover { color: var(--admin-accent-hover); }
+
+/* ==================== LOGIN PAGE ==================== */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-card h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--admin-accent);
+}
+
+.login-card p {
+    color: var(--admin-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 24px;
+}
+
+/* ==================== LAYOUT ==================== */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 240px;
+    background: var(--admin-surface);
+    border-right: 1px solid var(--admin-border);
+    padding: 20px 0;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.admin-sidebar .logo {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--admin-border);
+    margin-bottom: 12px;
+}
+
+.admin-sidebar .logo a {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--admin-accent);
+}
+
+.admin-sidebar .logo small {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--admin-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+}
+
+.sidebar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: var(--admin-text-muted);
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.sidebar-nav a:hover,
+.sidebar-nav a.active {
+    color: var(--admin-text);
+    background: var(--admin-surface-hover);
+    border-left-color: var(--admin-accent);
+}
+
+.sidebar-nav a svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    flex-shrink: 0;
+}
+
+.sidebar-nav .divider {
+    height: 1px;
+    background: var(--admin-border);
+    margin: 12px 20px;
+}
+
+.admin-main {
+    flex: 1;
+    margin-left: 240px;
+    padding: 30px;
+}
+
+/* ==================== TYPOGRAPHY ==================== */
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.page-header p {
+    color: var(--admin-text-muted);
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+/* ==================== STATS CARDS ==================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    padding: 20px;
+}
+
+.stat-card .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--admin-text-muted);
+    margin-bottom: 8px;
+}
+
+.stat-card .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--admin-accent);
+}
+
+/* ==================== FORMS ==================== */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--admin-text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 14px;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    color: var(--admin-text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+select.form-control {
+    cursor: pointer;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--admin-radius);
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: var(--admin-accent);
+    color: #1a1410;
+}
+
+.btn-primary:hover {
+    background: var(--admin-accent-hover);
+    color: #1a1410;
+}
+
+.btn-danger {
+    background: var(--admin-danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: var(--admin-danger-hover);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text);
+}
+
+.btn-outline:hover {
+    border-color: var(--admin-accent);
+    color: var(--admin-accent);
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-block {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ==================== TABLE ==================== */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    overflow: hidden;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--admin-border);
+    font-size: 0.875rem;
+}
+
+.data-table th {
+    background: var(--admin-surface-hover);
+    color: var(--admin-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tr:hover td {
+    background: rgba(212, 168, 67, 0.03);
+}
+
+.data-table img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* ==================== CARD FORM ==================== */
+.form-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.form-card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* ==================== ALERTS ==================== */
+.alert {
+    padding: 12px 16px;
+    border-radius: var(--admin-radius);
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+}
+
+.alert-success {
+    background: rgba(39, 174, 96, 0.1);
+    border: 1px solid rgba(39, 174, 96, 0.3);
+    color: var(--admin-success);
+}
+
+.alert-error {
+    background: rgba(192, 57, 43, 0.1);
+    border: 1px solid rgba(192, 57, 43, 0.3);
+    color: var(--admin-danger-hover);
+}
+
+/* ==================== BADGES ==================== */
+.badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-unread {
+    background: rgba(212, 168, 67, 0.15);
+    color: var(--admin-accent);
+}
+
+.badge-read {
+    background: rgba(138, 126, 110, 0.15);
+    color: var(--admin-text-muted);
+}
+
+.badge-featured {
+    background: rgba(39, 174, 96, 0.15);
+    color: var(--admin-success);
+}
+
+.badge-success {
+    background: rgba(39, 174, 96, 0.15);
+    color: var(--admin-success);
+}
+
+.badge-danger {
+    background: rgba(192, 57, 43, 0.15);
+    color: var(--admin-danger-hover);
+}
+
+/* ==================== MESSAGE DETAIL ==================== */
+.message-detail {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.message-detail .meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.message-detail .meta-item {
+    font-size: 0.8rem;
+}
+
+.message-detail .meta-item span {
+    color: var(--admin-text-muted);
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.message-detail .body {
+    line-height: 1.8;
+    color: var(--admin-text);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 768px) {
+    .admin-sidebar {
+        width: 60px;
+        padding: 12px 0;
+    }
+
+    .admin-sidebar .logo a,
+    .admin-sidebar .logo small,
+    .sidebar-nav a span {
+        display: none;
+    }
+
+    .sidebar-nav a {
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .admin-main {
+        margin-left: 60px;
+        padding: 16px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .data-table {
+        font-size: 0.8rem;
+    }
+
+    .data-table th:nth-child(n+3),
+    .data-table td:nth-child(n+3) {
+        display: none;
+    }
+}

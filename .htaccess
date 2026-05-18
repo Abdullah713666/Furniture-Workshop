@@ -1,0 +1,10 @@
+# Block access to log files and sensitive config
+<FilesMatch "\.(log|sql|md)$">
+    Deny from all
+</FilesMatch>
+
+# Block direct access to config directory
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^config/ - [F,L]
+</IfModule>
