@@ -3,7 +3,7 @@
  * Admin Hub / Index — Antique Furniture Workshop
  * Premium landing page for the admin area
  */
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/init.php';
 require_once __DIR__ . '/auth.php';
 
 // If logged in, pull stats for a richer display

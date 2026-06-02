@@ -10,24 +10,44 @@ $db = getDB();
 $message = '';
 $message_type = '';
 
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+// --- Handle Actions (POST with CSRF) ---
+
 // Delete
-if (isset($_GET['delete'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+    $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM services WHERE id = ?");
-    $stmt->execute([$_GET['delete']]);
+    $stmt->execute([$id]);
     header('Location: services.php?msg=deleted');
     exit;
 }
 
 // Toggle active
-if (isset($_GET['toggle_active'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle') {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+    $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("UPDATE services SET is_active = NOT is_active WHERE id = ?");
-    $stmt->execute([$_GET['toggle_active']]);
+    $stmt->execute([$id]);
     header('Location: services.php?msg=updated');
     exit;
 }
 
 // Add / Edit
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+
     $id = $_POST['id'] ?? '';
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
@@ -38,22 +58,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $display_order = intval($_POST['display_order'] ?? 0);
     $is_active = isset($_POST['is_active']) ? 1 : 0;
 
-    // Handle file upload
+    // Handle file upload with strict checks
     if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
-        $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         $file_type = mime_content_type($_FILES['image_file']['tmp_name']);
         $max_size = 5 * 1024 * 1024; // 5MB
 
-        if (!in_array($file_type, $allowed)) {
-            $message = 'Invalid file type. Allowed: JPG, PNG, WebP, GIF.';
+        $ext = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+        $allowed_exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+        if (!in_array($file_type, $allowed_mime) || !in_array($ext, $allowed_exts)) {
+            $message = 'Invalid file type. Allowed: JPG, JPEG, PNG, WebP, GIF.';
+            $message_type = 'error';
+        } elseif (!@getimagesize($_FILES['image_file']['tmp_name'])) {
+            $message = 'File is not a valid image.';
             $message_type = 'error';
         } elseif ($_FILES['image_file']['size'] > $max_size) {
             $message = 'File too large. Maximum size is 5MB.';
             $message_type = 'error';
         } else {
-            $ext = pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION);
             $safe_name = preg_replace('/[^a-z0-9-]/', '-', strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_FILENAME)));
-            $filename = 'service-' . $safe_name . '-' . time() . '.' . $ext;
+            $filename = $safe_name . '-' . time() . '.' . $ext;
             $dest = __DIR__ . '/../images/' . $filename;
 
             if (move_uploaded_file($_FILES['image_file']['tmp_name'], $dest)) {
@@ -66,31 +91,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($message)) {
-        if (empty($title) || empty($description)) {
-            $message = 'Title and description are required.';
+        if (empty($title) || empty($image_path)) {
+            $message = 'Title and image path are required.';
             $message_type = 'error';
         } else {
             if ($id) {
-                $stmt = $db->prepare("UPDATE services SET title=?, description=?, image_path=?, alt_text=?, cta_text=?, cta_link=?, display_order=?, is_active=? WHERE id=?");
+                // Update
+                $stmt = $db->prepare("UPDATE services SET title = ?, description = ?, image_path = ?, alt_text = ?, cta_text = ?, cta_link = ?, display_order = ?, is_active = ? WHERE id = ?");
                 $stmt->execute([$title, $description, $image_path, $alt_text, $cta_text, $cta_link, $display_order, $is_active, $id]);
+                header('Location: services.php?msg=saved');
+                exit;
             } else {
+                // Insert
                 $stmt = $db->prepare("INSERT INTO services (title, description, image_path, alt_text, cta_text, cta_link, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->execute([$title, $description, $image_path, $alt_text, $cta_text, $cta_link, $display_order, $is_active]);
+                header('Location: services.php?msg=saved');
+                exit;
             }
-            header('Location: services.php?msg=saved');
-            exit;
         }
     }
 }
 
 // Status messages
 if (isset($_GET['msg'])) {
-    $messages = ['saved' => 'Service saved!', 'deleted' => 'Service deleted.', 'updated' => 'Service updated.'];
+    $messages = [
+        'saved' => 'Service saved successfully.',
+        'deleted' => 'Service deleted successfully.',
+        'updated' => 'Service status updated.'
+    ];
     $message = $messages[$_GET['msg']] ?? '';
     $message_type = 'success';
 }
 
-// Edit item
+// Fetch single service for editing
 $edit_item = null;
 if (isset($_GET['edit'])) {
     $stmt = $db->prepare("SELECT * FROM services WHERE id = ?");
@@ -98,8 +131,8 @@ if (isset($_GET['edit'])) {
     $edit_item = $stmt->fetch();
 }
 
-// Fetch all
-$services = $db->query("SELECT * FROM services ORDER BY display_order ASC")->fetchAll();
+// Fetch all services
+$services = $db->query("SELECT * FROM services ORDER BY display_order ASC, created_at DESC")->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -115,54 +148,45 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC")->fet
 
         <main class="admin-main">
             <div class="page-header">
-                <h1>Services</h1>
-                <p>Manage the services displayed on your Services page.</p>
+                <h1>Our Services</h1>
+                <p>Manage the dynamic restoration and craftsmanship services shown on the website.</p>
             </div>
 
             <?php if ($message): ?>
             <div class="alert alert-<?php echo $message_type; ?>"><?php echo htmlspecialchars($message); ?></div>
             <?php endif; ?>
 
-            <!-- Add/Edit Form -->
+            <!-- Form Card (Add/Edit) -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? 'Edit Service' : 'Add New Service'; ?></h2>
+                <h2><?php echo $edit_item ? '📝 Edit Service: ' . htmlspecialchars($edit_item['title']) : '✨ Add New Service'; ?></h2>
                 <form method="POST" action="services.php" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
                     <input type="hidden" name="id" value="<?php echo $edit_item['id']; ?>">
                     <?php endif; ?>
 
-                    <div class="form-group">
-                        <label for="title">Title *</label>
-                        <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($edit_item['title'] ?? ''); ?>" required>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">Title *</label>
+                            <input type="text" class="form-control" id="title" name="title" value="<?php echo htmlspecialchars($edit_item['title'] ?? ''); ?>" required>
+                        </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description">Description *</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required><?php echo htmlspecialchars($edit_item['description'] ?? ''); ?></textarea>
+                        <textarea class="form-control" id="description" name="description" rows="4" required><?php echo htmlspecialchars($edit_item['description'] ?? ''); ?></textarea>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="image_path">Image Path</label>
-                            <input type="text" class="form-control" id="image_path" name="image_path" value="<?php echo htmlspecialchars($edit_item['image_path'] ?? ''); ?>" placeholder="images/service-name.jpg">
-                            <p style="font-size: 0.7rem; color: var(--admin-text-muted); margin-top: 4px;">Images stored in <code>images/</code> folder. Shown on the Services page.</p>
+                            <label for="image_file">Upload Service Image</label>
+                            <input type="file" class="form-control" id="image_file" name="image_file" accept="image/*">
                         </div>
                         <div class="form-group">
-                            <label for="image_file">Or Upload Image</label>
-                            <input type="file" class="form-control" id="image_file" name="image_file" accept="image/jpeg,image/png,image/webp,image/gif" style="padding: 8px;">
-                            <p style="font-size: 0.7rem; color: var(--admin-text-muted); margin-top: 4px;">Max 5MB. JPG, PNG, WebP, GIF.</p>
+                            <label for="image_path">Or Image URL/Path</label>
+                            <input type="text" class="form-control" id="image_path" name="image_path" value="<?php echo htmlspecialchars($edit_item['image_path'] ?? ''); ?>">
                         </div>
                     </div>
-
-                    <?php if ($edit_item && !empty($edit_item['image_path'])): ?>
-                    <div class="form-group">
-                        <label>Current Image</label>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <img src="../<?php echo htmlspecialchars($edit_item['image_path']); ?>" alt="" style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--admin-border);">
-                            <span style="font-size: 0.8rem; color: var(--admin-text-muted);"><?php echo htmlspecialchars($edit_item['image_path']); ?></span>
-                        </div>
-                    </div>
-                    <?php endif; ?>
 
                     <div class="form-row">
                         <div class="form-group">
@@ -218,18 +242,28 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC")->fet
                 <tbody>
                     <?php foreach ($services as $svc): ?>
                     <tr>
-                        <td><img src="../<?php echo htmlspecialchars($svc['image_path']); ?>" alt=""></td>
+                        <td><img src="../<?php echo htmlspecialchars($svc['image_path']); ?>" alt="" style="width:50px; height:50px; object-fit:cover; border-radius:4px;"></td>
                         <td><?php echo htmlspecialchars($svc['title']); ?></td>
                         <td>
-                            <a href="services.php?toggle_active=<?php echo $svc['id']; ?>" class="badge <?php echo $svc['is_active'] ? 'badge-featured' : 'badge-read'; ?>">
-                                <?php echo $svc['is_active'] ? 'Active' : 'Hidden'; ?>
-                            </a>
+                            <form method="POST" action="services.php" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                <input type="hidden" name="action" value="toggle">
+                                <input type="hidden" name="id" value="<?php echo $svc['id']; ?>">
+                                <button type="submit" class="badge <?php echo $svc['is_active'] ? 'badge-featured' : 'badge-read'; ?>" style="cursor:pointer; border:none; background:none; font-family:inherit;">
+                                    <?php echo $svc['is_active'] ? 'Active' : 'Hidden'; ?>
+                                </button>
+                            </form>
                         </td>
                         <td><?php echo $svc['display_order']; ?></td>
                         <td>
-                            <div class="actions">
+                            <div class="actions" style="display:flex; gap:8px;">
                                 <a href="services.php?edit=<?php echo $svc['id']; ?>" class="btn btn-outline btn-sm">Edit</a>
-                                <a href="services.php?delete=<?php echo $svc['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this service?')">Delete</a>
+                                <form method="POST" action="services.php" style="display:inline;" onsubmit="return confirm('Delete this service?')">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $svc['id']; ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

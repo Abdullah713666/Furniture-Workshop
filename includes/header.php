@@ -5,7 +5,7 @@
  * Include this at the top of every public page.
  * Before including, set: $page_title, $page_description, $active_page
  */
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/init.php';
 
 $page_title = $page_title ?? 'Antique Furniture Workshop';
 $page_description = $page_description ?? 'Expert antique furniture restoration, custom commissions, and conservation services.';
@@ -21,7 +21,9 @@ $active_page = $active_page ?? 'home';
     <meta name="description" content="<?php echo htmlspecialchars($page_description); ?>">
     <meta name="keywords" content="antique furniture, restoration, woodworking, custom commissions, conservation">
     <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="css/style.css?v=2.0">
+    <link rel="stylesheet" href="css/style.css?v=3.5">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 </head>
 
 <body>

@@ -37,7 +37,7 @@ require_once 'includes/header.php';
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; color: var(--text-muted);">
                 <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <input type="text" id="gallerySearch" class="form-control" placeholder="Search collection..." aria-label="Search collection" style="padding-left: 44px; border-radius: 30px;">
+            <input type="text" id="gallerySearch" class="form-control" placeholder="Search by title or keyword..." aria-label="Search by title or keyword" style="padding-left: 44px; border-radius: 30px;">
         </div>
     </div>
 
@@ -46,6 +46,12 @@ require_once 'includes/header.php';
         <?php foreach ($items as $item): ?>
         <div class="gallery-item fade-up" data-category="<?php echo htmlspecialchars($item['category']); ?>" data-title="<?php echo htmlspecialchars(strtolower($item['title'])); ?>" data-desc="<?php echo htmlspecialchars(strtolower($item['description'])); ?>">
             <img src="<?php echo htmlspecialchars($item['image_path']); ?>" alt="<?php echo htmlspecialchars($item['alt_text']); ?>" loading="lazy">
+            <div class="gallery-item-info">
+                <span class="gallery-item-title"><?php echo htmlspecialchars($item['title']); ?></span>
+                <?php if (!empty($item['tag'])): ?>
+                <span class="gallery-item-tag"><?php echo htmlspecialchars($item['tag']); ?></span>
+                <?php endif; ?>
+            </div>
         </div>
         <?php endforeach; ?>
     </div>

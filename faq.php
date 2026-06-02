@@ -26,13 +26,6 @@ require_once 'includes/header.php';
         <h1>Knowledge & <span class="accent-text">Care</span></h1>
         <p>Everything you need to know about restoring and preserving your treasured antiques.</p>
         
-        <!-- Search -->
-        <div class="faq-search">
-            <svg class="faq-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-            <input type="text" id="faqSearch" placeholder="Search questions..." aria-label="Search FAQs">
-        </div>
     </section>
 
     <!-- ==================== FAQ ACCORDION ==================== -->
@@ -95,22 +88,7 @@ require_once 'includes/header.php';
             });
         });
 
-        // Search filter
-        var searchInput = document.getElementById('faqSearch');
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                var query = this.value.toLowerCase().trim();
-                document.querySelectorAll('.faq-card').forEach(function(card) {
-                    var q = card.getAttribute('data-question') || '';
-                    var a = card.getAttribute('data-answer') || '';
-                    if (query === '' || q.includes(query) || a.includes(query)) {
-                        card.style.display = '';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-            });
-        }
+
     });
     </script>
 

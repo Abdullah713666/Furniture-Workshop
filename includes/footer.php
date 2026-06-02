@@ -13,20 +13,6 @@ $active_page = $active_page ?? 'home';
     <!-- ==================== FOOTER ==================== -->
     <footer class="footer" role="contentinfo">
         <p>&copy; <?php echo date('Y'); ?> Antique Workshop. All rights reserved. &bull; <a href="faq.php" style="color: inherit; text-decoration: none; opacity: 0.8; margin-left: 8px;">FAQ</a></p>
-        <div class="footer-social">
-            <a href="<?php echo getSetting('instagram_url', '#'); ?>" aria-label="Instagram">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="2" y="2" width="20" height="20" rx="5" />
-                    <circle cx="12" cy="12" r="5" />
-                    <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none" />
-                </svg>
-            </a>
-            <a href="<?php echo getSetting('twitter_url', '#'); ?>" aria-label="Twitter">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0012 7.5v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
-                </svg>
-            </a>
-        </div>
     </footer>
 
     <!-- ==================== BOTTOM NAV (Mobile) ==================== -->
@@ -64,6 +50,56 @@ $active_page = $active_page ?? 'home';
         </a>
     </nav>
 
+    <!-- ==================== COOKIE CONSENT BANNER ==================== -->
+    <div class="cookie-consent" id="cookieConsent" role="dialog" aria-label="Cookie consent">
+        <div class="cookie-settings-panel" id="cookieSettingsPanel">
+            <div class="cookie-setting-item">
+                <div class="cookie-setting-info">
+                    <h5>Essential Cookies</h5>
+                    <p>Required for the website to function. Cannot be disabled.</p>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" checked disabled>
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-setting-item">
+                <div class="cookie-setting-info">
+                    <h5>Analytics Cookies</h5>
+                    <p>Help us understand how visitors interact with our website.</p>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" id="cookieAnalytics" checked>
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+            <div class="cookie-setting-item">
+                <div class="cookie-setting-info">
+                    <h5>Marketing Cookies</h5>
+                    <p>Used to deliver relevant advertisements and track campaigns.</p>
+                </div>
+                <label class="cookie-toggle">
+                    <input type="checkbox" id="cookieMarketing">
+                    <span class="cookie-toggle-slider"></span>
+                </label>
+            </div>
+        </div>
+        <div class="cookie-consent-inner">
+            <div class="cookie-consent-content">
+                <div class="cookie-icon">🍪</div>
+                <div class="cookie-text">
+                    <h4>We Value Your Privacy</h4>
+                    <p>We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies. <a href="contact.php">Learn more</a></p>
+                </div>
+            </div>
+            <div class="cookie-consent-actions">
+                <button class="cookie-btn cookie-btn-settings" id="cookieSettingsBtn">⚙ Preferences</button>
+                <button class="cookie-btn cookie-btn-decline" id="cookieDecline">Decline</button>
+                <button class="cookie-btn cookie-btn-accept" id="cookieAccept">Accept All</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== SCROLL CONTROLS ==================== -->
     <div class="scroll-controls" aria-label="Page scroll controls">
         <button id="btnScrollUp" aria-label="Scroll Up">
@@ -74,7 +110,10 @@ $active_page = $active_page ?? 'home';
         </button>
     </div>
 
-    <script src="js/script.js" defer></script>
+    <script src="js/particles.js?v=1.0" defer></script>
+    <script src="js/script.js?v=2.2" defer></script>
+    <script src="js/nav-gsap.js?v=1.0" defer></script>
+    <script src="js/animations-gsap.js?v=1.0" defer></script>
 </body>
 
 </html>

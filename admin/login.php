@@ -2,18 +2,41 @@
 /**
  * Admin Login — Antique Furniture Workshop
  */
-require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/auth.php';
 
 // Redirect if already logged in
 if (isLoggedIn()) {
-    header('Location: dashboard.php');
+    header('Location: dashboard.php?token=' . ($_SESSION['admin_tab_token'] ?? ''));
     exit;
 }
 
 $error = '';
+$max_attempts = 5;
+$lockout_duration = 900; // 15 minutes
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Initialize brute force session counters
+if (!isset($_SESSION['admin_failed_attempts'])) {
+    $_SESSION['admin_failed_attempts'] = 0;
+}
+
+// Check lockout
+if (isset($_SESSION['admin_lockout_time']) && time() < $_SESSION['admin_lockout_time']) {
+    $remaining = ceil(($_SESSION['admin_lockout_time'] - time()) / 60);
+    $error = "Too many failed login attempts. Please try again in {$remaining} minutes.";
+}
+
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
+    // Validate CSRF
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -27,13 +50,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password_hash'])) {
+                // Reset failed attempts on success
+                $_SESSION['admin_failed_attempts'] = 0;
+                unset($_SESSION['admin_lockout_time']);
+
+                // Prevent Session Fixation by regenerating Session ID on login
+                session_regenerate_id(true);
+
                 $_SESSION['admin_id'] = $user['id'];
                 $_SESSION['admin_user'] = $user['username'];
                 $_SESSION['admin_tab_token'] = bin2hex(random_bytes(16));
+                $_SESSION['last_activity'] = time();
                 header('Location: dashboard.php?token=' . $_SESSION['admin_tab_token']);
                 exit;
             } else {
-                $error = 'Invalid username or password.';
+                $_SESSION['admin_failed_attempts']++;
+                if ($_SESSION['admin_failed_attempts'] >= $max_attempts) {
+                    $_SESSION['admin_lockout_time'] = time() + $lockout_duration;
+                    $error = 'Too many failed login attempts. You are locked out for 15 minutes.';
+                } else {
+                    $remaining_attempts = $max_attempts - $_SESSION['admin_failed_attempts'];
+                    $error = "Invalid username or password. {$remaining_attempts} attempts remaining.";
+                }
             }
         } catch (Exception $e) {
             $error = 'Database error. Please make sure the database has been set up.';
@@ -71,22 +109,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST" action="login.php">
+                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required autofocus>
+                    <input type="text" class="form-control" id="username" name="username" required autofocus <?php echo !empty($error) && isset($_SESSION['admin_lockout_time']) && time() < $_SESSION['admin_lockout_time'] ? 'disabled' : ''; ?>>
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="pw-wrapper">
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password" required <?php echo !empty($error) && isset($_SESSION['admin_lockout_time']) && time() < $_SESSION['admin_lockout_time'] ? 'disabled' : ''; ?>>
                         <button type="button" class="pw-toggle" onclick="togglePw(this)" aria-label="Toggle password visibility">
                             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 8px;">Sign In</button>
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 8px;" <?php echo !empty($error) && isset($_SESSION['admin_lockout_time']) && time() < $_SESSION['admin_lockout_time'] ? 'disabled' : ''; ?>>Sign In</button>
             </form>
 
             <p style="text-align: center; margin-top: 20px; font-size: 0.8rem;">

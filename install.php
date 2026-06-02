@@ -17,8 +17,29 @@ $step = $_GET['step'] ?? 'start';
 $error = '';
 $success = '';
 
+// Check if database is already installed to prevent malicious re-installation exploits
+$is_installed = false;
+try {
+    $test_dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+    $test_pdo = new PDO($test_dsn, $user, $pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+    $stmt = $test_pdo->query("SHOW TABLES LIKE 'admin_users'");
+    if ($stmt->fetch()) {
+        $is_installed = true;
+    }
+} catch (Exception $e) {
+    // Cannot connect or DB doesn't exist, which is expected before setup
+}
+
+if ($is_installed) {
+    $step = 'blocked';
+    $error = 'The Antique Furniture Workshop is already successfully installed. Re-running the installer is blocked for security reasons.';
+}
+
 // Allow custom credentials
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'install') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'install' && !$is_installed) {
+
     $host = trim($_POST['host'] ?? $host);
     $user = trim($_POST['user'] ?? $user);
     $pass = $_POST['pass'] ?? $pass;
@@ -31,7 +52,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ]);
         
-        // Step 2: Create database
+        // Step 2: Create database (validate and quote dbname to prevent SQL injection)
+        $dbname = preg_replace('/[^a-zA-Z0-9_\-]/', '', $dbname);
         $pdo->exec("CREATE DATABASE IF NOT EXISTS `$dbname` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         $pdo->exec("USE `$dbname`");
         
@@ -73,7 +95,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $success = 'Database setup completed successfully!';
         
     } catch (Exception $e) {
-        $error = $e->getMessage();
+        $error = 'Database installation failed. Please check your credentials and try again.';
+        error_log('Install error: ' . $e->getMessage());
     }
 }
 ?>
@@ -175,9 +198,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 ⚠️ <strong>Security:</strong> Please delete <code>install.php</code> and <code>database.sql</code> from your server after verifying everything works.
             </div>
             
+        <?php elseif ($step === 'blocked'): ?>
+            <h1>🔒 Setup Blocked</h1>
+            
+            <div class="alert alert-error" style="margin-top: 16px; line-height: 1.5;">
+                <?php echo $error; ?>
+            </div>
+            
+            <p style="margin-top: 16px; color: #8a7e6e;">For security, you cannot re-initialize the database because the tables already exist. If you actually wish to re-run the setup, please drop the existing database manually in phpMyAdmin first.</p>
+            
+            <div class="links" style="margin-top: 24px;">
+                <a href="index.php">🌐 Go to Website</a>
+                <a href="admin/login.php">🔐 Admin Panel</a>
+            </div>
         <?php else: ?>
             <h1>🛠️ Database Setup</h1>
             <p>This will create the MySQL database and populate it with your existing website content. Make sure MySQL is running.</p>
+
             
             <?php if ($error): ?>
             <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>

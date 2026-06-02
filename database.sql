@@ -19,6 +19,11 @@ CREATE TABLE IF NOT EXISTS `gallery_items` (
     `is_featured` TINYINT(1) NOT NULL DEFAULT 0,
     `tag` VARCHAR(50) DEFAULT '',
     `display_order` INT NOT NULL DEFAULT 0,
+    `price` DECIMAL(10,2) DEFAULT 0.00,
+    `quantity` INT DEFAULT 1,
+    `sku` VARCHAR(50) DEFAULT '',
+    `status` VARCHAR(20) DEFAULT 'available',
+    `item_condition` VARCHAR(50) DEFAULT 'Restored',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -149,6 +154,7 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('instagram_url', '#'),
 ('twitter_url', '#'),
 ('copyright_year', '2024'),
+('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=-0.1378%2C51.5037%2C-0.1069%2C51.5204&layer=mapnik&marker=51.5121%2C-0.1224'),
 ('philosophy_text', 'We believe restoration is an act of preservation—not just of wood and fabric, but of history itself. Every scratch tells a story, every grain holds a memory. Our mission is to honor the original artisan''s hand while breathing new life into timeless pieces.');
 
 -- ============================================================
@@ -171,12 +177,16 @@ INSERT INTO `admin_users` (`username`, `password_hash`) VALUES
 -- ============================================================
 CREATE TABLE IF NOT EXISTS `users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `username` VARCHAR(100) NOT NULL UNIQUE,
     `full_name` VARCHAR(255) NOT NULL,
     `email` VARCHAR(255) NOT NULL UNIQUE,
     `password_hash` VARCHAR(255) NOT NULL,
+    `gender` VARCHAR(50) DEFAULT NULL,
+    `country` VARCHAR(100) DEFAULT NULL,
     `is_active` TINYINT(1) NOT NULL DEFAULT 1,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
+
 -- ============================================================
 -- 9. FAQs
 -- ============================================================
@@ -198,3 +208,37 @@ INSERT INTO `faqs` (`question`, `answer`, `display_order`) VALUES
 ('Can you provide a valuation for my antique?', 'While we are primarily restorers, we can offer informal appraisals and historical context for your furniture. For formal insurance valuations, we recommend our Consultation service.', 3),
 ('Is restoration worth the cost?', 'In most cases, yes. Restoration not only preserves the beauty and utility of a piece but also maintains its historical and financial value for future generations.', 4),
 ('How should I care for my restored furniture?', 'Avoid direct sunlight and radiators. Dust regularly with a soft, lint-free cloth and avoid modern chemical sprays. We recommend high-quality beeswax once or twice a year.', 5);
+
+-- ============================================================
+-- 10. Categories
+-- ============================================================
+CREATE TABLE IF NOT EXISTS `categories` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(100) NOT NULL,
+    `slug` VARCHAR(100) NOT NULL UNIQUE,
+    `description` VARCHAR(255) DEFAULT '',
+    `display_order` INT NOT NULL DEFAULT 0,
+    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+INSERT IGNORE INTO `categories` (`name`, `slug`, `display_order`) VALUES
+('Restoration', 'restoration', 1),
+('Handcrafted', 'handcrafted', 2),
+('Baroque', 'baroque', 3);
+
+-- ============================================================
+-- 11. Transactions
+-- ============================================================
+CREATE TABLE IF NOT EXISTS `transactions` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `item_id` INT DEFAULT NULL,
+    `item_title` VARCHAR(255) NOT NULL,
+    `buyer_name` VARCHAR(255) NOT NULL,
+    `buyer_email` VARCHAR(255) DEFAULT '',
+    `amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+    `payment_method` VARCHAR(50) DEFAULT 'cash',
+    `status` VARCHAR(20) DEFAULT 'completed',
+    `notes` TEXT,
+    `transaction_date` DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;

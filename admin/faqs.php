@@ -10,16 +10,30 @@ $db = getDB();
 $message = '';
 $message_type = '';
 
-// Delete
-if (isset($_GET['delete'])) {
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+// Delete (POST only with CSRF)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+    $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM faqs WHERE id = ?");
-    $stmt->execute([$_GET['delete']]);
+    $stmt->execute([$id]);
     header('Location: faqs.php?msg=deleted');
     exit;
 }
 
-// Add / Edit
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Add / Edit (POST with CSRF)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+
     $id = $_POST['id'] ?? '';
     $question = trim($_POST['question'] ?? '');
     $answer = trim($_POST['answer'] ?? '');
@@ -84,8 +98,9 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
 
             <!-- Add/Edit Form -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? 'Edit FAQ' : 'Add New FAQ'; ?></h2>
+                <h2><?php echo $edit_item ? '📝 Edit FAQ' : '✨ Add New FAQ'; ?></h2>
                 <form method="POST" action="faqs.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
                     <input type="hidden" name="id" value="<?php echo $edit_item['id']; ?>">
                     <?php endif; ?>
@@ -155,9 +170,14 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
                             <?php endif; ?>
                         </td>
                         <td>
-                            <div class="actions">
+                            <div class="actions" style="display:flex; gap:8px;">
                                 <a href="faqs.php?edit=<?php echo $faq['id']; ?>" class="btn btn-outline btn-sm">Edit</a>
-                                <a href="faqs.php?delete=<?php echo $faq['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this FAQ?')">Delete</a>
+                                <form method="POST" action="faqs.php" style="display:inline;" onsubmit="return confirm('Delete this FAQ?')">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $faq['id']; ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

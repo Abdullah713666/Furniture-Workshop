@@ -66,6 +66,28 @@ require_once 'includes/header.php';
     <!-- ==================== SECTION DIVIDER ==================== -->
     <div class="section-divider"></div>
 
+    <!-- ==================== BEFORE / AFTER SLIDER ==================== -->
+    <section class="before-after-section" aria-label="Before and after restoration">
+        <div class="section-header text-center fade-up" style="padding: 0 20px; margin-bottom: 30px;">
+            <h2 style="text-align:center;">The <span class="accent-text">Transformation</span></h2>
+            <p class="section-subtitle" style="margin: 10px auto 0; text-align:center;">Drag the slider to see the restoration magic.</p>
+        </div>
+
+        <div class="before-after-container scale-reveal">
+            <img src="images/after-restoration.png" alt="Furniture after restoration" class="ba-before">
+            <img src="images/before-restoration.png" alt="Furniture before restoration" class="ba-after">
+            <div class="ba-slider-line"></div>
+            <div class="ba-slider-handle">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/><polyline points="15 18 9 12 15 6"/></svg>
+            </div>
+            <span class="ba-label ba-label-before">Before</span>
+            <span class="ba-label ba-label-after">After</span>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION DIVIDER ==================== -->
+    <div class="section-divider"></div>
+
     <!-- ==================== FEATURED PIECES ==================== -->
     <section aria-label="Featured pieces">
         <div class="section-header slide-left" style="padding: 0 20px;">
@@ -88,28 +110,6 @@ require_once 'includes/header.php';
                 </div>
             </article>
             <?php endforeach; ?>
-        </div>
-    </section>
-
-    <!-- ==================== SECTION DIVIDER ==================== -->
-    <div class="section-divider"></div>
-
-    <!-- ==================== BEFORE / AFTER SLIDER ==================== -->
-    <section class="before-after-section" aria-label="Before and after restoration">
-        <div class="section-header text-center fade-up" style="padding: 0 20px; margin-bottom: 30px;">
-            <h2 style="text-align:center;">The <span class="accent-text">Transformation</span></h2>
-            <p class="section-subtitle" style="margin: 10px auto 0; text-align:center;">Drag the slider to see the restoration magic.</p>
-        </div>
-
-        <div class="before-after-container scale-reveal">
-            <img src="images/after-restoration.png" alt="Furniture after restoration" class="ba-before">
-            <img src="images/before-restoration.png" alt="Furniture before restoration" class="ba-after">
-            <div class="ba-slider-line"></div>
-            <div class="ba-slider-handle">
-                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/><polyline points="15 18 9 12 15 6"/></svg>
-            </div>
-            <span class="ba-label ba-label-before">Before</span>
-            <span class="ba-label ba-label-after">After</span>
         </div>
     </section>
 

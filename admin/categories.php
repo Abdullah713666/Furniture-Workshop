@@ -16,31 +16,6 @@ if (empty($_SESSION['csrf_token'])) {
 }
 $csrf_token = $_SESSION['csrf_token'];
 
-// Create categories table if not exists
-try {
-    $db->exec("CREATE TABLE IF NOT EXISTS `categories` (
-        `id` INT AUTO_INCREMENT PRIMARY KEY,
-        `name` VARCHAR(100) NOT NULL,
-        `slug` VARCHAR(100) NOT NULL UNIQUE,
-        `description` VARCHAR(255) DEFAULT '',
-        `display_order` INT NOT NULL DEFAULT 0,
-        `is_active` TINYINT(1) NOT NULL DEFAULT 1,
-        `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB");
-    
-    // Seed from existing gallery categories if empty
-    $count = $db->query("SELECT COUNT(*) FROM categories")->fetchColumn();
-    if ($count == 0) {
-        $existing = $db->query("SELECT DISTINCT category FROM gallery_items")->fetchAll(PDO::FETCH_COLUMN);
-        $order = 1;
-        foreach ($existing as $cat) {
-            $slug = strtolower(preg_replace('/[^a-z0-9]+/', '-', $cat));
-            $stmt = $db->prepare("INSERT IGNORE INTO categories (name, slug, display_order) VALUES (?, ?, ?)");
-            $stmt->execute([ucfirst($cat), $slug, $order++]);
-        }
-    }
-} catch (Exception $e) { error_log('Categories setup: ' . $e->getMessage()); }
-
 // Delete (POST only with CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) { die('Invalid request.'); }

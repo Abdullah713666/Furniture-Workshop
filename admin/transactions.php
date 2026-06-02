@@ -16,22 +16,6 @@ if (empty($_SESSION['csrf_token'])) {
 }
 $csrf_token = $_SESSION['csrf_token'];
 
-// Create transactions table
-try {
-    $db->exec("CREATE TABLE IF NOT EXISTS `transactions` (
-        `id` INT AUTO_INCREMENT PRIMARY KEY,
-        `item_id` INT DEFAULT NULL,
-        `item_title` VARCHAR(255) NOT NULL,
-        `buyer_name` VARCHAR(255) NOT NULL,
-        `buyer_email` VARCHAR(255) DEFAULT '',
-        `amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-        `payment_method` VARCHAR(50) DEFAULT 'cash',
-        `status` VARCHAR(20) DEFAULT 'completed',
-        `notes` TEXT,
-        `transaction_date` DATETIME DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB");
-} catch (Exception $e) { error_log('Transactions setup: ' . $e->getMessage()); }
-
 // Delete (POST only with CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) { die('Invalid request.'); }

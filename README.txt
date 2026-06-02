@@ -49,10 +49,9 @@ PAGES:
 
 ADMIN PANEL:
 - URL:      http://localhost/antique-furniture-workshop/admin/
-- Username: abdullahasjad
-- Password: BSIT51F24S056
+- Login with the credentials you set during installation
 
-  You can change these credentials in Admin Panel > Settings.
+  You can change credentials in Admin Panel > Settings.
 
 CONTACT FORM:
 - The contact form requires Apache + PHP + MySQL (XAMPP) to process

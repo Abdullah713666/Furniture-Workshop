@@ -6,10 +6,20 @@
  * Update the credentials below to match your MySQL setup.
  */
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'antique_workshop');
-define('DB_USER', 'root');        // Default XAMPP user
-define('DB_PASS', '');            // Default XAMPP password (empty)
+// Detect environment: InfinityFree hosting vs local XAMPP
+if (strpos($_SERVER['HTTP_HOST'] ?? '', 'infinityfree.me') !== false) {
+    // Live (InfinityFree)
+    define('DB_HOST', 'sql307.infinityfree.com');
+    define('DB_NAME', 'if0_41826537_antique_workshop');
+    define('DB_USER', 'if0_41826537');
+    define('DB_PASS', 'nuv9mkHqFvceKMR');
+} else {
+    // Local (XAMPP)
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'antique_workshop');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+}
 define('DB_CHARSET', 'utf8mb4');
 
 /**
@@ -56,7 +66,3 @@ function getSetting($key, $default = '') {
     }
 }
 
-// Start session for admin auth (only if not already started)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}

@@ -16,26 +16,6 @@ if (empty($_SESSION['csrf_token'])) {
 }
 $csrf_token = $_SESSION['csrf_token'];
 
-// Add inventory columns if they don't exist
-try {
-    $cols = $db->query("SHOW COLUMNS FROM gallery_items")->fetchAll(PDO::FETCH_COLUMN);
-    if (!in_array('price', $cols)) {
-        $db->exec("ALTER TABLE gallery_items ADD COLUMN `price` DECIMAL(10,2) DEFAULT 0.00");
-    }
-    if (!in_array('quantity', $cols)) {
-        $db->exec("ALTER TABLE gallery_items ADD COLUMN `quantity` INT DEFAULT 1");
-    }
-    if (!in_array('sku', $cols)) {
-        $db->exec("ALTER TABLE gallery_items ADD COLUMN `sku` VARCHAR(50) DEFAULT ''");
-    }
-    if (!in_array('status', $cols)) {
-        $db->exec("ALTER TABLE gallery_items ADD COLUMN `status` VARCHAR(20) DEFAULT 'available'");
-    }
-    if (!in_array('item_condition', $cols)) {
-        $db->exec("ALTER TABLE gallery_items ADD COLUMN `item_condition` VARCHAR(50) DEFAULT 'Restored'");
-    }
-} catch (Exception $e) { error_log('Inventory setup: ' . $e->getMessage()); }
-
 // Update inventory
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['item_id'])) {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) { die('Invalid request.'); }

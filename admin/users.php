@@ -10,25 +10,39 @@ $db = getDB();
 $message = '';
 $message_type = '';
 
-// Toggle active status
-if (isset($_GET['toggle_active'])) {
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+// Toggle active status (POST with CSRF)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle') {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+    $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("UPDATE users SET is_active = NOT is_active WHERE id = ?");
-    $stmt->execute([$_GET['toggle_active']]);
+    $stmt->execute([$id]);
     header('Location: users.php?msg=updated');
     exit;
 }
 
-// Delete user
-if (isset($_GET['delete'])) {
+// Delete user (POST with CSRF)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+    $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM users WHERE id = ?");
-    $stmt->execute([$_GET['delete']]);
+    $stmt->execute([$id]);
     header('Location: users.php?msg=deleted');
     exit;
 }
 
 // Status messages
 if (isset($_GET['msg'])) {
-    $messages = ['updated' => 'User updated.', 'deleted' => 'User deleted.'];
+    $messages = ['updated' => 'User status updated.', 'deleted' => 'User account deleted.'];
     $message = $messages[$_GET['msg']] ?? '';
     $message_type = 'success';
 }
@@ -81,8 +95,11 @@ $active_users = count(array_filter($users, function($u) { return $u['is_active']
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Full Name</th>
                         <th>Email</th>
+                        <th>Gender</th>
+                        <th>Country</th>
                         <th>Registered</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -91,22 +108,36 @@ $active_users = count(array_filter($users, function($u) { return $u['is_active']
                 <tbody>
                     <?php foreach ($users as $user): ?>
                     <tr>
+                        <td><code><?php echo htmlspecialchars($user['username'] ?? 'N/A'); ?></code></td>
                         <td><?php echo htmlspecialchars($user['full_name']); ?></td>
                         <td><?php echo htmlspecialchars($user['email']); ?></td>
+                        <td><?php echo htmlspecialchars($user['gender'] ?? 'N/A'); ?></td>
+                        <td><?php echo htmlspecialchars($user['country'] ?? 'N/A'); ?></td>
                         <td><?php echo date('M j, Y', strtotime($user['created_at'])); ?></td>
                         <td>
-                            <a href="users.php?toggle_active=<?php echo $user['id']; ?>"
-                               class="badge <?php echo $user['is_active'] ? 'badge-featured' : 'badge-read'; ?>">
-                                <?php echo $user['is_active'] ? 'Active' : 'Inactive'; ?>
-                            </a>
+                            <form method="POST" action="users.php" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                <input type="hidden" name="action" value="toggle">
+                                <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                <button type="submit" class="badge <?php echo $user['is_active'] ? 'badge-featured' : 'badge-read'; ?>" style="cursor:pointer; border:none; background:none; font-family:inherit;">
+                                    <?php echo $user['is_active'] ? 'Active' : 'Inactive'; ?>
+                                </button>
+                            </form>
                         </td>
                         <td>
-                            <div class="actions">
-                                <a href="users.php?toggle_active=<?php echo $user['id']; ?>" 
-                                   class="btn btn-outline btn-sm"><?php echo $user['is_active'] ? 'Deactivate' : 'Activate'; ?></a>
-                                <a href="users.php?delete=<?php echo $user['id']; ?>"
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Delete this user?')">Delete</a>
+                            <div class="actions" style="display:flex; gap: 8px;">
+                                <form method="POST" action="users.php" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                    <input type="hidden" name="action" value="toggle">
+                                    <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                    <button type="submit" class="btn btn-outline btn-sm"><?php echo $user['is_active'] ? 'Deactivate' : 'Activate'; ?></button>
+                                </form>
+                                <form method="POST" action="users.php" style="display:inline;" onsubmit="return confirm('Delete this user?')">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $user['id']; ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

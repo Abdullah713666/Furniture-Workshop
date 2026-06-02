@@ -10,25 +10,44 @@ $db = getDB();
 $message = '';
 $message_type = '';
 
-// --- Handle Actions ---
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+// --- Handle Actions (POST with CSRF) ---
+
 // Delete
-if (isset($_GET['delete'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+    $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM gallery_items WHERE id = ?");
-    $stmt->execute([$_GET['delete']]);
+    $stmt->execute([$id]);
     header('Location: gallery.php?msg=deleted');
     exit;
 }
 
 // Toggle featured
-if (isset($_GET['toggle_featured'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle_featured') {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+    $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("UPDATE gallery_items SET is_featured = NOT is_featured WHERE id = ?");
-    $stmt->execute([$_GET['toggle_featured']]);
+    $stmt->execute([$id]);
     header('Location: gallery.php?msg=updated');
     exit;
 }
 
 // Add / Edit
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+
     $id = $_POST['id'] ?? '';
     $title = trim($_POST['title'] ?? '');
     $description = trim($_POST['description'] ?? '');
@@ -39,20 +58,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     $display_order = intval($_POST['display_order'] ?? 0);
 
-    // Handle file upload
+    // Handle file upload with strict validation
     if (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
-        $allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        $allowed_mime = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         $file_type = mime_content_type($_FILES['image_file']['tmp_name']);
         $max_size = 5 * 1024 * 1024; // 5MB
 
-        if (!in_array($file_type, $allowed)) {
-            $message = 'Invalid file type. Allowed: JPG, PNG, WebP, GIF.';
+        $ext = strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION));
+        $allowed_exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+        if (!in_array($file_type, $allowed_mime) || !in_array($ext, $allowed_exts)) {
+            $message = 'Invalid file type. Allowed: JPG, JPEG, PNG, WebP, GIF.';
+            $message_type = 'error';
+        } elseif (!@getimagesize($_FILES['image_file']['tmp_name'])) {
+            $message = 'File is not a valid image.';
             $message_type = 'error';
         } elseif ($_FILES['image_file']['size'] > $max_size) {
             $message = 'File too large. Maximum size is 5MB.';
             $message_type = 'error';
         } else {
-            $ext = pathinfo($_FILES['image_file']['name'], PATHINFO_EXTENSION);
             $safe_name = preg_replace('/[^a-z0-9-]/', '-', strtolower(pathinfo($_FILES['image_file']['name'], PATHINFO_FILENAME)));
             $filename = $safe_name . '-' . time() . '.' . $ext;
             $dest = __DIR__ . '/../images/' . $filename;
@@ -73,27 +97,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             if ($id) {
                 // Update
-                $stmt = $db->prepare("UPDATE gallery_items SET title=?, description=?, category=?, image_path=?, alt_text=?, tag=?, is_featured=?, display_order=? WHERE id=?");
-                $stmt->execute([$title, $description, $category, $image_path, $alt_text, $tag, $is_featured, $display_order, $id]);
+                $stmt = $db->prepare("UPDATE gallery_items SET title = ?, description = ?, category = ?, image_path = ?, alt_text = ?, is_featured = ?, tag = ?, display_order = ? WHERE id = ?");
+                $stmt->execute([$title, $description, $category, $image_path, $alt_text, $is_featured, $tag, $display_order, $id]);
+                header('Location: gallery.php?msg=saved');
+                exit;
             } else {
                 // Insert
-                $stmt = $db->prepare("INSERT INTO gallery_items (title, description, category, image_path, alt_text, tag, is_featured, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$title, $description, $category, $image_path, $alt_text, $tag, $is_featured, $display_order]);
+                $stmt = $db->prepare("INSERT INTO gallery_items (title, description, category, image_path, alt_text, is_featured, tag, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$title, $description, $category, $image_path, $alt_text, $is_featured, $tag, $display_order]);
+                header('Location: gallery.php?msg=saved');
+                exit;
             }
-            header('Location: gallery.php?msg=saved');
-            exit;
         }
     }
 }
 
 // Status messages
 if (isset($_GET['msg'])) {
-    $messages = ['saved' => 'Item saved successfully!', 'deleted' => 'Item deleted.', 'updated' => 'Item updated.'];
+    $messages = [
+        'saved' => 'Gallery item saved successfully.',
+        'deleted' => 'Gallery item deleted successfully.',
+        'updated' => 'Gallery item status updated.'
+    ];
     $message = $messages[$_GET['msg']] ?? '';
     $message_type = 'success';
 }
 
-// Get edit item if editing
+// Fetch single item for editing
 $edit_item = null;
 if (isset($_GET['edit'])) {
     $stmt = $db->prepare("SELECT * FROM gallery_items WHERE id = ?");
@@ -101,8 +131,8 @@ if (isset($_GET['edit'])) {
     $edit_item = $stmt->fetch();
 }
 
-// Fetch all items
-$items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC")->fetchAll();
+// Fetch all gallery items
+$items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC, created_at DESC")->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -118,18 +148,19 @@ $items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC")->f
 
         <main class="admin-main">
             <div class="page-header">
-                <h1>Gallery Items</h1>
-                <p>Manage your collection pieces and featured items.</p>
+                <h1>Gallery Collection</h1>
+                <p>Manage the furniture and restoration pieces shown on the website.</p>
             </div>
 
             <?php if ($message): ?>
             <div class="alert alert-<?php echo $message_type; ?>"><?php echo htmlspecialchars($message); ?></div>
             <?php endif; ?>
 
-            <!-- Add/Edit Form -->
+            <!-- Form Card (Add/Edit) -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? 'Edit Item' : 'Add New Item'; ?></h2>
+                <h2><?php echo $edit_item ? '📝 Edit Item: ' . htmlspecialchars($edit_item['title']) : '✨ Add New Item'; ?></h2>
                 <form method="POST" action="gallery.php" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
                     <input type="hidden" name="id" value="<?php echo $edit_item['id']; ?>">
                     <?php endif; ?>
@@ -144,38 +175,26 @@ $items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC")->f
                             <select class="form-control" id="category" name="category">
                                 <option value="restoration" <?php if (($edit_item['category'] ?? '') === 'restoration') echo 'selected'; ?>>Restoration</option>
                                 <option value="handcrafted" <?php if (($edit_item['category'] ?? '') === 'handcrafted') echo 'selected'; ?>>Handcrafted</option>
-                                <option value="baroque" <?php if (($edit_item['category'] ?? '') === 'baroque') echo 'selected'; ?>>Baroque</option>
+                                <option value="baroque" <?php if (($edit_item['category'] ?? '') === 'baroque') echo 'selected'; ?>>Baroque / Antique</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <input type="text" class="form-control" id="description" name="description" value="<?php echo htmlspecialchars($edit_item['description'] ?? ''); ?>" placeholder="e.g. c. 1870 — Full French polish restoration">
+                        <textarea class="form-control" id="description" name="description" rows="3"><?php echo htmlspecialchars($edit_item['description'] ?? ''); ?></textarea>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="image_path">Image Path</label>
-                            <input type="text" class="form-control" id="image_path" name="image_path" value="<?php echo htmlspecialchars($edit_item['image_path'] ?? ''); ?>" placeholder="images/my-piece.jpg">
-                            <p style="font-size: 0.7rem; color: var(--admin-text-muted); margin-top: 4px;">All images are stored in the <code>images/</code> folder. Shown on Homepage (featured) and Gallery page.</p>
+                            <label for="image_file">Upload Image File (Recommended)</label>
+                            <input type="file" class="form-control" id="image_file" name="image_file" accept="image/*">
                         </div>
                         <div class="form-group">
-                            <label for="image_file">Or Upload Image</label>
-                            <input type="file" class="form-control" id="image_file" name="image_file" accept="image/jpeg,image/png,image/webp,image/gif" style="padding: 8px;">
-                            <p style="font-size: 0.7rem; color: var(--admin-text-muted); margin-top: 4px;">Max 5MB. JPG, PNG, WebP, GIF. Overrides path above if uploaded.</p>
+                            <label for="image_path">Or Image URL/Path</label>
+                            <input type="text" class="form-control" id="image_path" name="image_path" value="<?php echo htmlspecialchars($edit_item['image_path'] ?? ''); ?>">
                         </div>
                     </div>
-
-                    <?php if ($edit_item && !empty($edit_item['image_path'])): ?>
-                    <div class="form-group">
-                        <label>Current Image</label>
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <img src="../<?php echo htmlspecialchars($edit_item['image_path']); ?>" alt="" style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--admin-border);">
-                            <span style="font-size: 0.8rem; color: var(--admin-text-muted);"><?php echo htmlspecialchars($edit_item['image_path']); ?></span>
-                        </div>
-                    </div>
-                    <?php endif; ?>
 
                     <div class="form-row">
                         <div class="form-group">
@@ -226,19 +245,29 @@ $items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC")->f
                 <tbody>
                     <?php foreach ($items as $item): ?>
                     <tr>
-                        <td><img src="../<?php echo htmlspecialchars($item['image_path']); ?>" alt=""></td>
+                        <td><img src="../<?php echo htmlspecialchars($item['image_path']); ?>" alt="" style="width:50px; height:50px; object-fit:cover; border-radius:4px;"></td>
                         <td><?php echo htmlspecialchars($item['title']); ?></td>
                         <td><?php echo htmlspecialchars(ucfirst($item['category'])); ?></td>
                         <td>
-                            <a href="gallery.php?toggle_featured=<?php echo $item['id']; ?>" class="badge <?php echo $item['is_featured'] ? 'badge-featured' : 'badge-read'; ?>">
-                                <?php echo $item['is_featured'] ? '★ Featured' : 'No'; ?>
-                            </a>
+                            <form method="POST" action="gallery.php" style="display:inline;">
+                                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                <input type="hidden" name="action" value="toggle_featured">
+                                <input type="hidden" name="id" value="<?php echo $item['id']; ?>">
+                                <button type="submit" class="badge <?php echo $item['is_featured'] ? 'badge-featured' : 'badge-read'; ?>" style="cursor:pointer; border:none; background:none; font-family:inherit;">
+                                    <?php echo $item['is_featured'] ? '★ Featured' : 'No'; ?>
+                                </button>
+                            </form>
                         </td>
                         <td><?php echo $item['display_order']; ?></td>
                         <td>
-                            <div class="actions">
+                            <div class="actions" style="display:flex; gap:8px;">
                                 <a href="gallery.php?edit=<?php echo $item['id']; ?>" class="btn btn-outline btn-sm">Edit</a>
-                                <a href="gallery.php?delete=<?php echo $item['id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this item?')">Delete</a>
+                                <form method="POST" action="gallery.php" style="display:inline;" onsubmit="return confirm('Delete this item?')">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?php echo $item['id']; ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
                             </div>
                         </td>
                     </tr>

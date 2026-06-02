@@ -5,10 +5,11 @@
  * GET  → Displays the contact page with form + info
  * POST → Validates, sanitizes, logs the form submission, returns JSON/redirect
  */
-require_once 'config/database.php';
+require_once 'config/init.php';
 
 // reCAPTCHA keys — replace with your own for production
-// These are Google's TEST keys that work on localhost
+// Get your keys at: https://www.google.com/recaptcha/admin
+// These are Google's TEST keys that always pass (use ONLY for localhost testing)
 define('RECAPTCHA_SITE_KEY', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
 define('RECAPTCHA_SECRET_KEY', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
 define('MAX_WORDS', 250);
@@ -16,7 +17,18 @@ define('MAX_WORDS', 250);
 // ============================================================
 // HANDLE POST (form submission)
 // ============================================================
+// Generate CSRF token
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate CSRF
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        die('Invalid CSRF token.');
+    }
+
 
     // --- Helper: sanitize a string input ---
     function sanitize_input($data) {
@@ -42,7 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($fullname) || mb_strlen($fullname) < 2) {
         $errors[] = 'Full name is required (at least 2 characters).';
+    } elseif (!preg_match('/^[a-zA-Z][a-zA-Z\s.\-]*$/', $fullname)) {
+        $errors[] = 'Full name must start with a letter and cannot contain special characters or numbers.';
     }
+
     if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'A valid email address is required.';
     }
@@ -135,8 +150,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode($response);
     } else {
         $status = $response['success'] ? 'success' : 'error';
-        $msg = urlencode($response['message']);
-        header("Location: contact.php?status=$status&msg=$msg");
+        $msg_raw = $response['message'];
+        $msg = urlencode($msg_raw);
+        $redirect_url = "contact.php?status=$status&msg=$msg";
+        $redirect_url = str_replace(["\r", "\n"], '', $redirect_url);
+        header("Location: $redirect_url");
     }
     exit;
 }
@@ -174,6 +192,8 @@ require_once 'includes/header.php';
             <div id="formMessage" class="form-message"></div>
 
             <form id="contactForm" action="contact.php" method="POST" novalidate>
+                <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+
 
                 <div class="form-group">
                     <label for="fullname">Full Name</label>
