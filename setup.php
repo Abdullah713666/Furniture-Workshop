@@ -7,7 +7,7 @@ $dbport = getenv('MYSQLPORT') ?: '3306';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $pdo = new PDO("mysql:host=$host;port=$dbport;charset=utf8mb4", $user, $pass, [
+        $pdo = new PDO("mysql:host=$host;port=$dbport;dbname=$dbname;charset=utf8mb4", $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ]);
 
