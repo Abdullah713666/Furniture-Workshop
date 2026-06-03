@@ -12,7 +12,7 @@ if (getenv('MYSQLHOST')) {
     define('DB_HOST', getenv('MYSQLHOST'));
     define('DB_NAME', getenv('MYSQLDATABASE') ?: 'antique_workshop');
     define('DB_USER', getenv('MYSQLUSER') ?: 'root');
-    define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
+    define('DB_PASS', getenv('MYSQLPASSWORD') ?: getenv('MYSQL_ROOT_PASSWORD') ?: '');
     define('DB_PORT', getenv('MYSQLPORT') ?: '3306');
 } elseif (strpos($_SERVER['HTTP_HOST'] ?? '', 'infinityfree.me') !== false) {
     // Live (InfinityFree)

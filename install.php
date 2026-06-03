@@ -10,7 +10,7 @@
 
 $host = getenv('MYSQLHOST') ?: 'localhost';
 $user = getenv('MYSQLUSER') ?: 'root';
-$pass = getenv('MYSQLPASSWORD') ?: '';
+$pass = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_ROOT_PASSWORD') ?: '';
 $dbname = getenv('MYSQLDATABASE') ?: 'antique_workshop';
 $dbport = getenv('MYSQLPORT') ?: '3306';
 
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $success = 'Database setup completed successfully!';
         
     } catch (Exception $e) {
-        $error = 'Database installation failed. Please check your credentials and try again.';
+        $error = 'Database installation failed: ' . $e->getMessage();
         error_log('Install error: ' . $e->getMessage());
     }
 }
