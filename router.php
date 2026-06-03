@@ -1,7 +1,7 @@
 <?php
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-$blocked = ['/config/', '/database.sql', '/install.php', '/setup.php'];
+$blocked = ['/config/', '/database.sql', '/install.php'];
 foreach ($blocked as $b) {
     if (strpos($uri, $b) === 0) {
         http_response_code(403);
