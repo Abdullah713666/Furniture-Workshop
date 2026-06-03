@@ -236,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 
                 <div class="form-group">
                     <label>MySQL Password</label>
-                    <input type="password" name="pass" value="" placeholder="Leave empty for XAMPP default">
+                    <input type="password" name="pass" value="<?php echo htmlspecialchars($pass); ?>" placeholder="Leave empty for XAMPP default">
                 </div>
                 
                 <div class="form-group">
