@@ -6,19 +6,28 @@
  * Update the credentials below to match your MySQL setup.
  */
 
-// Detect environment: InfinityFree hosting vs local XAMPP
-if (strpos($_SERVER['HTTP_HOST'] ?? '', 'infinityfree.me') !== false) {
+// Detect environment: Railway / InfinityFree / local XAMPP
+if (getenv('MYSQLHOST')) {
+    // Railway — uses built-in MySQL service env vars
+    define('DB_HOST', getenv('MYSQLHOST'));
+    define('DB_NAME', getenv('MYSQLDATABASE') ?: 'antique_workshop');
+    define('DB_USER', getenv('MYSQLUSER') ?: 'root');
+    define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
+    define('DB_PORT', getenv('MYSQLPORT') ?: '3306');
+} elseif (strpos($_SERVER['HTTP_HOST'] ?? '', 'infinityfree.me') !== false) {
     // Live (InfinityFree)
     define('DB_HOST', 'sql307.infinityfree.com');
     define('DB_NAME', 'if0_41826537_antique_workshop');
     define('DB_USER', 'if0_41826537');
     define('DB_PASS', 'nuv9mkHqFvceKMR');
+    define('DB_PORT', '3306');
 } else {
     // Local (XAMPP)
     define('DB_HOST', 'localhost');
     define('DB_NAME', 'antique_workshop');
     define('DB_USER', 'root');
     define('DB_PASS', '');
+    define('DB_PORT', '3306');
 }
 define('DB_CHARSET', 'utf8mb4');
 
@@ -30,7 +39,7 @@ function getDB() {
     static $pdo = null;
     
     if ($pdo === null) {
-        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
+        $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

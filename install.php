@@ -8,10 +8,11 @@
  * After successful setup, DELETE this file for security.
  */
 
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$dbname = 'antique_workshop';
+$host = getenv('MYSQLHOST') ?: 'localhost';
+$user = getenv('MYSQLUSER') ?: 'root';
+$pass = getenv('MYSQLPASSWORD') ?: '';
+$dbname = getenv('MYSQLDATABASE') ?: 'antique_workshop';
+$dbport = getenv('MYSQLPORT') ?: '3306';
 
 $step = $_GET['step'] ?? 'start';
 $error = '';
@@ -20,7 +21,7 @@ $success = '';
 // Check if database is already installed to prevent malicious re-installation exploits
 $is_installed = false;
 try {
-    $test_dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
+    $test_dsn = "mysql:host=$host;port=$dbport;dbname=$dbname;charset=utf8mb4";
     $test_pdo = new PDO($test_dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     ]);
@@ -48,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     
     try {
         // Step 1: Connect to MySQL (without database)
-        $pdo = new PDO("mysql:host=$host;charset=utf8mb4", $user, $pass, [
+        $pdo = new PDO("mysql:host=$host;port=$dbport;charset=utf8mb4", $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         ]);
         
@@ -252,7 +253,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             </form>
             
             <div class="note">
-                Default XAMPP settings: host = <code>localhost</code>, user = <code>root</code>, password = <em>empty</em>
+                <?php if (getenv('MYSQLHOST')): ?>
+                    Railway detected — credentials auto-filled from your MySQL service.
+                <?php else: ?>
+                    Default XAMPP settings: host = <code>localhost</code>, user = <code>root</code>, password = <em>empty</em>
+                <?php endif; ?>
             </div>
         <?php endif; ?>
     </div>
