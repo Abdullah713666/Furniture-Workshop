@@ -11,6 +11,8 @@ $message = '';
 $message_type = '';
 $verified_username = '';
 
+afw_ensure_auth_schema();
+
 if ($token === '') {
     $message = 'Missing verification token.';
     $message_type = 'error';

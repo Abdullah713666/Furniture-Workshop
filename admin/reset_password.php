@@ -18,6 +18,8 @@ $message_type = '';
 $valid_token = false;
 $user_id = null;
 
+afw_ensure_auth_schema();
+
 if ($token !== '') {
     try {
         $db = getDB();

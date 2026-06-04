@@ -16,6 +16,8 @@ if (isLoggedIn()) {
 
 require_once __DIR__ . '/includes/mailer.php';
 
+afw_ensure_auth_schema();
+
 $message = '';
 $message_type = '';
 

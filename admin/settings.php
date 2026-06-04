@@ -13,6 +13,9 @@ $message_type = '';
 
 require_once __DIR__ . '/includes/mailer.php';
 
+// Self-heal: ensure email/verification/reset columns exist on admin_users
+afw_ensure_auth_schema();
+
 // Get current admin info
 $stmt = $db->prepare("SELECT * FROM admin_users WHERE id = ?");
 $stmt->execute([$_SESSION['admin_id']]);
