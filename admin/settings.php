@@ -11,68 +11,143 @@ $db = getDB();
 $message = '';
 $message_type = '';
 
+require_once __DIR__ . '/includes/mailer.php';
+
 // Get current admin info
 $stmt = $db->prepare("SELECT * FROM admin_users WHERE id = ?");
 $stmt->execute([$_SESSION['admin_id']]);
 $admin = $stmt->fetch();
 
+// CSRF for the email-update sub-form
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrf_token = $_SESSION['csrf_token'];
+
+function afw_base_url(): string {
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    return $scheme . '://' . $host;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $current_password = $_POST['current_password'] ?? '';
-    $new_username = trim($_POST['new_username'] ?? '');
-    $new_password = $_POST['new_password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
+    $action = $_POST['action'] ?? 'account';
 
-    // Verify current password
-    if (!password_verify($current_password, $admin['password_hash'])) {
-        $message = 'Current password is incorrect.';
-        $message_type = 'error';
-    } elseif (empty($new_username)) {
-        $message = 'Username cannot be empty.';
-        $message_type = 'error';
-    } elseif (!empty($new_password) && strlen($new_password) < 6) {
-        $message = 'New password must be at least 6 characters.';
-        $message_type = 'error';
-    } elseif (!empty($new_password) && $new_password !== $confirm_password) {
-        $message = 'New passwords do not match.';
-        $message_type = 'error';
-    } else {
-        try {
-            // Check if new username is taken by another admin
-            if ($new_username !== $admin['username']) {
-                $check = $db->prepare("SELECT id FROM admin_users WHERE username = ? AND id != ?");
-                $check->execute([$new_username, $admin['id']]);
-                if ($check->fetch()) {
-                    $message = 'That username is already taken.';
-                    $message_type = 'error';
-                }
-            }
+    if (($action ?? '') === '' || $action === 'account') {
+        // ===== Account settings (username + password) =====
+        $current_password = $_POST['current_password'] ?? '';
+        $new_username = trim($_POST['new_username'] ?? '');
+        $new_password = $_POST['new_password'] ?? '';
+        $confirm_password = $_POST['confirm_password'] ?? '';
 
-            if (empty($message)) {
-                // Update username
-                $stmt = $db->prepare("UPDATE admin_users SET username = ? WHERE id = ?");
-                $stmt->execute([$new_username, $admin['id']]);
-                $_SESSION['admin_user'] = $new_username;
-
-                // Update password if provided
-                if (!empty($new_password)) {
-                    $hash = password_hash($new_password, PASSWORD_BCRYPT);
-                    $stmt = $db->prepare("UPDATE admin_users SET password_hash = ? WHERE id = ?");
-                    $stmt->execute([$hash, $admin['id']]);
-                }
-
-                $message = 'Settings updated successfully!';
-                $message_type = 'success';
-
-                // Refresh admin data
-                $stmt = $db->prepare("SELECT * FROM admin_users WHERE id = ?");
-                $stmt->execute([$_SESSION['admin_id']]);
-                $admin = $stmt->fetch();
-            }
-        } catch (Exception $e) {
-            $message = 'Error updating settings. Please try again.';
+        if (!password_verify($current_password, $admin['password_hash'])) {
+            $message = 'Current password is incorrect.';
             $message_type = 'error';
+        } elseif (empty($new_username)) {
+            $message = 'Username cannot be empty.';
+            $message_type = 'error';
+        } elseif (!empty($new_password) && strlen($new_password) < 8) {
+            $message = 'New password must be at least 8 characters.';
+            $message_type = 'error';
+        } elseif (!empty($new_password) && $new_password !== $confirm_password) {
+            $message = 'New passwords do not match.';
+            $message_type = 'error';
+        } else {
+            try {
+                if ($new_username !== $admin['username']) {
+                    $check = $db->prepare("SELECT id FROM admin_users WHERE username = ? AND id != ?");
+                    $check->execute([$new_username, $admin['id']]);
+                    if ($check->fetch()) {
+                        $message = 'That username is already taken.';
+                        $message_type = 'error';
+                    }
+                }
+
+                if (empty($message)) {
+                    $stmt = $db->prepare("UPDATE admin_users SET username = ? WHERE id = ?");
+                    $stmt->execute([$new_username, $admin['id']]);
+                    $_SESSION['admin_user'] = $new_username;
+
+                    if (!empty($new_password)) {
+                        $hash = password_hash($new_password, PASSWORD_BCRYPT);
+                        $stmt = $db->prepare("UPDATE admin_users SET password_hash = ? WHERE id = ?");
+                        $stmt->execute([$hash, $admin['id']]);
+                    }
+
+                    $message = 'Account settings updated successfully!';
+                    $message_type = 'success';
+                }
+            } catch (Exception $e) {
+                $message = 'Error updating settings. Please try again.';
+                $message_type = 'error';
+            }
+        }
+    } elseif ($action === 'set_email') {
+        // ===== Update email + send verification link =====
+        $new_email = trim($_POST['new_email'] ?? '');
+
+        if (!filter_var($new_email, FILTER_VALIDATE_EMAIL)) {
+            $message = 'Please enter a valid email address.';
+            $message_type = 'error';
+        } else {
+            $token = bin2hex(random_bytes(32));
+            $upd = $db->prepare("UPDATE admin_users SET email = ?, email_verified = 0, verification_token = ? WHERE id = ?");
+            $upd->execute([$new_email, $token, $admin['id']]);
+
+            $link = afw_base_url() . '/admin/verify_email.php?token=' . urlencode($token);
+            $html = '<div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #1a1410;">'
+                  . '<h2 style="color: #6b5020;">Verify your admin email</h2>'
+                  . '<p>Hello ' . htmlspecialchars($admin['username']) . ',</p>'
+                  . '<p>Click the button below to verify this email address for the Antique Workshop admin panel:</p>'
+                  . '<p style="margin: 28px 0;"><a href="' . htmlspecialchars($link) . '" '
+                  . 'style="background:#d4a843;color:#1a1410;padding:14px 28px;border-radius:6px;'
+                  . 'text-decoration:none;font-weight:600;display:inline-block;">Verify Email</a></p>'
+                  . '<p>Or paste this link:<br><span style="color:#6b5020;">' . htmlspecialchars($link) . '</span></p>'
+                  . '</div>';
+
+            $result = afw_send_email($new_email, 'Verify your admin email', $html);
+            if ($result['ok']) {
+                $message = 'Email updated. A verification link has been sent to ' . htmlspecialchars($new_email) . '.';
+                $message_type = 'success';
+            } else {
+                $message = 'Email was saved, but sending the verification email failed. Check that RESEND_API_KEY is set in your environment. (Resend status: ' . htmlspecialchars((string)$result['status']) . ')';
+                $message_type = 'error';
+                error_log('Resend send failed: ' . $result['error'] ?? '' . ' body=' . $result['body']);
+            }
+        }
+    } elseif ($action === 'resend_verification') {
+        // ===== Resend verification to current email =====
+        if (empty($admin['email'])) {
+            $message = 'No email on file. Please set an email first.';
+            $message_type = 'error';
+        } else {
+            $token = bin2hex(random_bytes(32));
+            $upd = $db->prepare("UPDATE admin_users SET verification_token = ? WHERE id = ?");
+            $upd->execute([$token, $admin['id']]);
+
+            $link = afw_base_url() . '/admin/verify_email.php?token=' . urlencode($token);
+            $html = '<div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #1a1410;">'
+                  . '<p>Hello ' . htmlspecialchars($admin['username']) . ',</p>'
+                  . '<p>Click below to verify your email:</p>'
+                  . '<p style="margin: 28px 0;"><a href="' . htmlspecialchars($link) . '" '
+                  . 'style="background:#d4a843;color:#1a1410;padding:14px 28px;border-radius:6px;'
+                  . 'text-decoration:none;font-weight:600;display:inline-block;">Verify Email</a></p>'
+                  . '</div>';
+            $result = afw_send_email($admin['email'], 'Verify your admin email', $html);
+            if ($result['ok']) {
+                $message = 'Verification email resent to ' . htmlspecialchars($admin['email']) . '.';
+                $message_type = 'success';
+            } else {
+                $message = 'Could not resend email. Check RESEND_API_KEY. (status ' . (int)$result['status'] . ')';
+                $message_type = 'error';
+            }
         }
     }
+
+    // Refresh admin data
+    $stmt = $db->prepare("SELECT * FROM admin_users WHERE id = ?");
+    $stmt->execute([$_SESSION['admin_id']]);
+    $admin = $stmt->fetch();
 }
 ?>
 <!DOCTYPE html>
@@ -101,12 +176,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <main class="admin-main">
             <div class="page-header">
                 <h1>Settings</h1>
-                <p>Update your admin username and password.</p>
+                <p>Update your admin username, password, and email.</p>
             </div>
 
             <?php if ($message): ?>
             <div class="alert alert-<?php echo $message_type; ?>"><?php echo htmlspecialchars($message); ?></div>
             <?php endif; ?>
+
+            <div class="form-card">
+                <h2>Email Address <?php if (!empty($admin['email'])): ?>
+                    <?php if (intval($admin['email_verified']) === 1): ?>
+                        <span class="badge badge-featured" style="font-size:0.7rem; vertical-align: middle;">✓ Verified</span>
+                    <?php else: ?>
+                        <span class="badge badge-unread" style="font-size:0.7rem; vertical-align: middle;">⚠ Unverified</span>
+                    <?php endif; ?>
+                <?php endif; ?></h2>
+                <p style="font-size:0.85rem; color: var(--admin-text-muted);">
+                    Used for password resets and security notifications. Must be verified to log in.
+                </p>
+
+                <form method="POST" action="settings.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
+                    <input type="hidden" name="action" value="set_email">
+
+                    <div class="form-group">
+                        <label for="new_email">Email</label>
+                        <input type="email" class="form-control" id="new_email" name="new_email"
+                               value="<?php echo htmlspecialchars($admin['email'] ?? ''); ?>"
+                               placeholder="you@example.com" required>
+                    </div>
+
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button type="submit" class="btn btn-primary">Save & Send Verification</button>
+                        <?php if (!empty($admin['email']) && intval($admin['email_verified']) === 0): ?>
+                        <button type="submit" name="action" value="resend_verification" class="btn btn-outline">Resend Verification</button>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
 
             <div class="form-card">
                 <h2>Account Settings</h2>
@@ -164,5 +271,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             : '<svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
     }
     </script>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

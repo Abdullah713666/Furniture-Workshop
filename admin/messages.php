@@ -202,5 +202,4 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
             <?php endif; ?>
         </main>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

@@ -370,33 +370,53 @@ document.addEventListener('DOMContentLoaded', () => {
     let isDragging = false;
     let autoSlideId = null;
     let autoSlidePhase = 0;
+    let userOverridePos = null;
+    let overrideFadeFrames = 0;
+
+    const clampPos = (p) => Math.max(5, Math.min(95, p));
 
     const updateSlider = (x) => {
       const rect = baContainer.getBoundingClientRect();
-      let pos = ((x - rect.left) / rect.width) * 100;
-      pos = Math.max(5, Math.min(95, pos));
-      
+      const pos = clampPos(((x - rect.left) / rect.width) * 100);
       if (afterImg) afterImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
       if (sliderLine) sliderLine.style.left = pos + '%';
       if (sliderHandle) sliderHandle.style.left = pos + '%';
     };
 
     const updateSliderPercent = (pos) => {
-      pos = Math.max(5, Math.min(95, pos));
-      if (afterImg) afterImg.style.clipPath = `inset(0 ${100 - pos}% 0 0)`;
-      if (sliderLine) sliderLine.style.left = pos + '%';
-      if (sliderHandle) sliderHandle.style.left = pos + '%';
+      const p = clampPos(pos);
+      if (afterImg) afterImg.style.clipPath = `inset(0 ${100 - p}% 0 0)`;
+      if (sliderLine) sliderLine.style.left = p + '%';
+      if (sliderHandle) sliderHandle.style.left = p + '%';
+    };
+
+    const readCurrentPos = () => {
+      const raw = sliderHandle ? parseFloat(sliderHandle.style.left) : NaN;
+      return isNaN(raw) ? 50 : raw;
     };
 
     const startAutoSlide = () => {
       stopAutoSlide();
       autoSlidePhase = 0;
       const tick = () => {
-        if (isDragging) { autoSlideId = requestAnimationFrame(tick); return; }
         autoSlidePhase += 0.008;
         const normalized = (Math.sin(autoSlidePhase) + 1) / 2;
-        const pos = 20 + normalized * 60;
-        updateSliderPercent(pos);
+        const target = 20 + normalized * 60;
+
+        if (isDragging) {
+          // Snapshot the user's last position; we'll smoothly resume from here on release
+          userOverridePos = readCurrentPos();
+          overrideFadeFrames = 0;
+        } else if (userOverridePos !== null && overrideFadeFrames < 20) {
+          // Lerp from user's last position back to the auto sine value (~20 frames ≈ 0.33s @60fps)
+          userOverridePos += (target - userOverridePos) * 0.05;
+          updateSliderPercent(userOverridePos);
+          overrideFadeFrames++;
+          if (overrideFadeFrames >= 20) userOverridePos = null;
+        } else {
+          userOverridePos = null;
+          updateSliderPercent(target);
+        }
         autoSlideId = requestAnimationFrame(tick);
       };
       autoSlideId = requestAnimationFrame(tick);
@@ -406,11 +426,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (autoSlideId) { cancelAnimationFrame(autoSlideId); autoSlideId = null; }
     };
 
-    baContainer.addEventListener('mousedown', (e) => { isDragging = true; stopAutoSlide(); updateSlider(e.clientX); });
+    baContainer.addEventListener('mousedown', (e) => { isDragging = true; updateSlider(e.clientX); });
     document.addEventListener('mousemove', (e) => { if (isDragging) updateSlider(e.clientX); });
     document.addEventListener('mouseup', () => { isDragging = false; });
 
-    baContainer.addEventListener('touchstart', (e) => { isDragging = true; stopAutoSlide(); updateSlider(e.touches[0].clientX); }, { passive: true });
+    baContainer.addEventListener('touchstart', (e) => { isDragging = true; updateSlider(e.touches[0].clientX); }, { passive: true });
     document.addEventListener('touchmove', (e) => { if (isDragging) updateSlider(e.touches[0].clientX); }, { passive: true });
     document.addEventListener('touchend', () => { isDragging = false; });
 

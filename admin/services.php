@@ -272,5 +272,4 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
             </table>
         </main>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

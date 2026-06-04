@@ -14,8 +14,6 @@ $services_count = $db->query("SELECT COUNT(*) FROM services")->fetchColumn();
 $messages_count = $db->query("SELECT COUNT(*) FROM contact_submissions")->fetchColumn();
 $unread_count = $db->query("SELECT COUNT(*) FROM contact_submissions WHERE is_read = 0")->fetchColumn();
 
-try { $users_count = $db->query("SELECT COUNT(*) FROM users")->fetchColumn(); } catch(Exception $e) { $users_count = 0; }
-
 // Category breakdown
 try {
     $cat_data = $db->query("SELECT category, COUNT(*) as cnt FROM gallery_items GROUP BY category ORDER BY cnt DESC")->fetchAll();
@@ -35,29 +33,9 @@ for ($i = 5; $i >= 0; $i--) {
     }
 }
 
-// Monthly sales (last 6 months)
-$sales_monthly = [];
-$total_revenue = 0;
-try {
-    $db->query("SELECT 1 FROM transactions LIMIT 1");
-    for ($i = 5; $i >= 0; $i--) {
-        $month = date('Y-m', strtotime("-$i months"));
-        $label = date('M Y', strtotime("-$i months"));
-        $cnt = $db->prepare("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status='completed' AND DATE_FORMAT(transaction_date, '%Y-%m') = ?");
-        $cnt->execute([$month]);
-        $val = $cnt->fetchColumn();
-        $sales_monthly[] = ['label' => $label, 'amount' => floatval($val)];
-    }
-    $total_revenue = $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status='completed'")->fetchColumn();
-} catch(Exception $e) {
-    for ($i = 5; $i >= 0; $i--) {
-        $sales_monthly[] = ['label' => date('M Y', strtotime("-$i months")), 'amount' => 0];
-    }
-}
-
 // Inventory status breakdown
 try {
-    $inv_status = $db->query("SELECT COALESCE(status, 'available') as s, COUNT(*) as cnt FROM gallery_items GROUP BY s")->fetchAll();
+    $inv_status = $db->query("SELECT COALESCE(status, 'on_display') as s, COUNT(*) as cnt FROM gallery_items GROUP BY s")->fetchAll();
 } catch(Exception $e) { $inv_status = []; }
 ?>
 <!DOCTYPE html>
@@ -89,12 +67,12 @@ try {
             <!-- Summary Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Total Revenue</div>
-                    <div class="stat-value">$<?php echo number_format($total_revenue, 0); ?></div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-label">Gallery Items</div>
                     <div class="stat-value"><?php echo $gallery_count; ?></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Services</div>
+                    <div class="stat-value"><?php echo $services_count; ?></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Messages</div>
@@ -104,18 +82,10 @@ try {
                     <div class="stat-label">Unread</div>
                     <div class="stat-value"><?php echo $unread_count; ?></div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Registered Users</div>
-                    <div class="stat-value"><?php echo $users_count; ?></div>
-                </div>
             </div>
 
             <!-- Charts -->
             <div class="charts-grid">
-                <div class="chart-card">
-                    <h3>Monthly Sales Revenue</h3>
-                    <canvas id="salesChart"></canvas>
-                </div>
                 <div class="chart-card">
                     <h3>Monthly Messages</h3>
                     <canvas id="messagesChart"></canvas>
@@ -140,23 +110,6 @@ try {
 
     Chart.defaults.color = chartTextColor;
     Chart.defaults.borderColor = gridColor;
-
-    // Sales Chart
-    new Chart(document.getElementById('salesChart'), {
-        type: 'bar',
-        data: {
-            labels: <?php echo json_encode(array_column($sales_monthly, 'label')); ?>,
-            datasets: [{
-                label: 'Revenue ($)',
-                data: <?php echo json_encode(array_column($sales_monthly, 'amount')); ?>,
-                backgroundColor: goldAlpha,
-                borderColor: goldColor,
-                borderWidth: 1,
-                borderRadius: 6
-            }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-    });
 
     // Messages Chart
     new Chart(document.getElementById('messagesChart'), {
@@ -196,10 +149,10 @@ try {
     new Chart(document.getElementById('inventoryChart'), {
         type: 'doughnut',
         data: {
-            labels: <?php echo json_encode(array_map(fn($s) => ucfirst($s['s']), $inv_status)); ?>,
+            labels: <?php echo json_encode(array_map(fn($s) => ucfirst(str_replace('_',' ',$s['s'])), $inv_status)); ?>,
             datasets: [{
                 data: <?php echo json_encode(array_column($inv_status, 'cnt')); ?>,
-                backgroundColor: ['#27ae60', '#e67e22', '#e74c3c', '#3498db', '#9b59b6'],
+                backgroundColor: ['#27ae60', '#e67e22', '#3498db', '#9b59b6', '#c0392b'],
                 borderColor: '#1e1a15',
                 borderWidth: 2
             }]
@@ -207,5 +160,4 @@ try {
         options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
     });
     </script>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

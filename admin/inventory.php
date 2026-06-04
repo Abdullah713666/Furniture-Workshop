@@ -21,13 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['item_id'])) {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) { die('Invalid request.'); }
     $item_id = intval($_POST['item_id']);
     $price = floatval($_POST['price'] ?? 0);
-    $quantity = intval($_POST['quantity'] ?? 1);
-    $sku = trim($_POST['sku'] ?? '');
-    $status = trim($_POST['status'] ?? 'available');
+    $status = trim($_POST['status'] ?? 'on_display');
     $condition = trim($_POST['item_condition'] ?? 'Restored');
 
-    $stmt = $db->prepare("UPDATE gallery_items SET price=?, quantity=?, sku=?, status=?, item_condition=? WHERE id=?");
-    $stmt->execute([$price, $quantity, $sku, $status, $condition, $item_id]);
+    $stmt = $db->prepare("UPDATE gallery_items SET price=?, status=?, item_condition=? WHERE id=?");
+    $stmt->execute([$price, $status, $condition, $item_id]);
     header('Location: inventory.php?msg=updated');
     exit;
 }
@@ -42,10 +40,9 @@ $items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC")->f
 
 // Stats
 $total_items = count($items);
-$available = count(array_filter($items, fn($i) => ($i['status'] ?? 'available') === 'available'));
-$sold = count(array_filter($items, fn($i) => ($i['status'] ?? '') === 'sold'));
-$total_value = array_sum(array_map(fn($i) => floatval($i['price'] ?? 0) * intval($i['quantity'] ?? 1), $items));
-$low_stock = count(array_filter($items, fn($i) => intval($i['quantity'] ?? 1) <= 1 && ($i['status'] ?? '') !== 'sold'));
+$on_display = count(array_filter($items, fn($i) => ($i['status'] ?? 'on_display') === 'on_display'));
+$private_collection = count(array_filter($items, fn($i) => ($i['status'] ?? '') === 'private_collection'));
+$commission_only = count(array_filter($items, fn($i) => ($i['status'] ?? '') === 'commission_only'));
 
 $edit_item = null;
 if (isset($_GET['edit'])) {
@@ -83,20 +80,16 @@ if (isset($_GET['edit'])) {
                     <div class="stat-value"><?php echo $total_items; ?></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Available</div>
-                    <div class="stat-value"><?php echo $available; ?></div>
+                    <div class="stat-label">On Display</div>
+                    <div class="stat-value"><?php echo $on_display; ?></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Sold</div>
-                    <div class="stat-value"><?php echo $sold; ?></div>
+                    <div class="stat-label">Private Collection</div>
+                    <div class="stat-value"><?php echo $private_collection; ?></div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Total Value</div>
-                    <div class="stat-value">$<?php echo number_format($total_value, 0); ?></div>
-                </div>
-                <div class="stat-card" <?php if ($low_stock > 0) echo 'style="border-color: #e67e22;"'; ?>>
-                    <div class="stat-label">Low Stock</div>
-                    <div class="stat-value"><?php echo $low_stock; ?></div>
+                    <div class="stat-label">Commission Only</div>
+                    <div class="stat-value"><?php echo $commission_only; ?></div>
                 </div>
             </div>
 
@@ -108,26 +101,16 @@ if (isset($_GET['edit'])) {
                     <input type="hidden" name="item_id" value="<?php echo $edit_item['id']; ?>">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="price">Price ($)</label>
-                            <input type="number" class="form-control" id="price" name="price" step="0.01" value="<?php echo $edit_item['price'] ?? 0; ?>">
-                        </div>
-                        <div class="form-group">
-                            <label for="quantity">Quantity</label>
-                            <input type="number" class="form-control" id="quantity" name="quantity" value="<?php echo $edit_item['quantity'] ?? 1; ?>">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="sku">SKU</label>
-                            <input type="text" class="form-control" id="sku" name="sku" value="<?php echo htmlspecialchars($edit_item['sku'] ?? ''); ?>" placeholder="e.g. AFW-001">
+                            <label for="price">Price (USD)</label>
+                            <input type="number" class="form-control" id="price" name="price" step="0.01" value="<?php echo $edit_item['price'] ?? 0; ?>" placeholder="Leave 0 for 'Price on Request'">
                         </div>
                         <div class="form-group">
                             <label for="status">Status</label>
                             <select class="form-control" id="status" name="status">
-                                <option value="available" <?php if (($edit_item['status'] ?? '') === 'available') echo 'selected'; ?>>Available</option>
-                                <option value="reserved" <?php if (($edit_item['status'] ?? '') === 'reserved') echo 'selected'; ?>>Reserved</option>
-                                <option value="sold" <?php if (($edit_item['status'] ?? '') === 'sold') echo 'selected'; ?>>Sold</option>
-                                <option value="restoration" <?php if (($edit_item['status'] ?? '') === 'restoration') echo 'selected'; ?>>In Restoration</option>
+                                <option value="on_display"         <?php if (($edit_item['status'] ?? 'on_display') === 'on_display') echo 'selected'; ?>>On Display</option>
+                                <option value="private_collection" <?php if (($edit_item['status'] ?? '') === 'private_collection') echo 'selected'; ?>>Private Collection</option>
+                                <option value="commission_only"   <?php if (($edit_item['status'] ?? '') === 'commission_only') echo 'selected'; ?>>Commission Only</option>
+                                <option value="sold"               <?php if (($edit_item['status'] ?? '') === 'sold') echo 'selected'; ?>>Sold / Disposed</option>
                             </select>
                         </div>
                     </div>
@@ -149,9 +132,7 @@ if (isset($_GET['edit'])) {
                     <tr>
                         <th>Image</th>
                         <th>Title</th>
-                        <th>SKU</th>
                         <th>Price</th>
-                        <th>Qty</th>
                         <th>Status</th>
                         <th>Condition</th>
                         <th>Actions</th>
@@ -159,17 +140,21 @@ if (isset($_GET['edit'])) {
                 </thead>
                 <tbody>
                     <?php foreach ($items as $item): ?>
-                    <tr <?php if (intval($item['quantity'] ?? 1) <= 1 && ($item['status'] ?? '') !== 'sold') echo 'style="background: rgba(230,126,34,0.05);"'; ?>>
+                    <tr>
                         <td><img src="../<?php echo htmlspecialchars($item['image_path']); ?>" alt="" style="width:50px;height:38px;object-fit:cover;border-radius:4px;"></td>
                         <td><?php echo htmlspecialchars($item['title']); ?></td>
-                        <td><code><?php echo htmlspecialchars($item['sku'] ?? '—'); ?></code></td>
-                        <td>$<?php echo number_format($item['price'] ?? 0, 2); ?></td>
-                        <td><?php echo $item['quantity'] ?? 1; ?></td>
                         <td>
-                            <span class="badge <?php 
-                                $s = $item['status'] ?? 'available';
-                                echo $s === 'available' ? 'badge-featured' : ($s === 'sold' ? 'badge-read' : 'badge-unread');
-                            ?>"><?php echo ucfirst($item['status'] ?? 'Available'); ?></span>
+                            <?php if (floatval($item['price'] ?? 0) > 0): ?>
+                                $<?php echo number_format($item['price'] ?? 0, 2); ?>
+                            <?php else: ?>
+                                <span style="color: var(--admin-text-muted);">Price on Request</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <span class="badge <?php
+                                $s = $item['status'] ?? 'on_display';
+                                echo $s === 'on_display' ? 'badge-featured' : ($s === 'sold' ? 'badge-read' : 'badge-unread');
+                            ?>"><?php echo ucfirst(str_replace('_', ' ', $s)); ?></span>
                         </td>
                         <td><?php echo htmlspecialchars($item['item_condition'] ?? 'Restored'); ?></td>
                         <td>
@@ -181,5 +166,4 @@ if (isset($_GET['edit'])) {
             </table>
         </main>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

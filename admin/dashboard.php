@@ -15,20 +15,6 @@ $unread_count = $db->query("SELECT COUNT(*) FROM contact_submissions WHERE is_re
 $total_messages = $db->query("SELECT COUNT(*) FROM contact_submissions")->fetchColumn();
 $timeline_count = $db->query("SELECT COUNT(*) FROM timeline_events")->fetchColumn();
 
-// Users count (wrapped in try-catch in case table doesn't exist yet)
-try {
-    $users_count = $db->query("SELECT COUNT(*) FROM users")->fetchColumn();
-} catch (Exception $e) {
-    $users_count = 0;
-}
-
-// Revenue (wrapped in try-catch in case table doesn't exist yet)
-try {
-    $total_revenue = $db->query("SELECT COALESCE(SUM(amount), 0) FROM transactions WHERE status='completed'")->fetchColumn();
-} catch (Exception $e) {
-    $total_revenue = 0;
-}
-
 // Categories count
 try {
     $categories_count = $db->query("SELECT COUNT(*) FROM categories")->fetchColumn();
@@ -74,14 +60,6 @@ $recent_messages = $db->query("SELECT * FROM contact_submissions ORDER BY submit
                 <div class="stat-card">
                     <div class="stat-label">Timeline Events</div>
                     <div class="stat-value"><?php echo $timeline_count; ?></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Registered Users</div>
-                    <div class="stat-value"><?php echo $users_count; ?></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Revenue</div>
-                    <div class="stat-value">$<?php echo number_format($total_revenue, 0); ?></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Categories</div>
@@ -141,5 +119,4 @@ $recent_messages = $db->query("SELECT * FROM contact_submissions ORDER BY submit
             }
         })();
     </script>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

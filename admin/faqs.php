@@ -186,5 +186,4 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
             </table>
         </main>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

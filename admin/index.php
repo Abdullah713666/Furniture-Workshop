@@ -17,7 +17,6 @@ if ($logged_in) {
         $stats['services']  = $db->query("SELECT COUNT(*) FROM services")->fetchColumn();
         $stats['messages']  = $db->query("SELECT COUNT(*) FROM contact_submissions WHERE is_read = 0")->fetchColumn();
         $stats['timeline']  = $db->query("SELECT COUNT(*) FROM timeline_events")->fetchColumn();
-        $stats['users']     = $db->query("SELECT COUNT(*) FROM users")->fetchColumn();
     } catch (Exception $e) {
         // Gracefully handle missing tables
     }
@@ -531,20 +530,6 @@ else $greeting = 'Good Evening';
                 </div>
                 <span class="arrow">→</span>
             </a>
-
-            <a href="users.php" class="nav-card">
-                <?php if (!empty($stats['users'])): ?>
-                <span class="card-stat stat-accent"><?php echo $stats['users']; ?> users</span>
-                <?php endif; ?>
-                <div class="card-icon">
-                    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                </div>
-                <div class="card-body">
-                    <div class="card-title">Users</div>
-                    <div class="card-desc">View and manage registered public site users.</div>
-                </div>
-                <span class="arrow">→</span>
-            </a>
         </div>
 
         <!-- Divider -->
@@ -586,5 +571,4 @@ else $greeting = 'Good Evening';
             <p>Antique Furniture Workshop &copy; <?php echo date('Y'); ?> &mdash; <a href="../index.php">Visit Website</a></p>
         </footer>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

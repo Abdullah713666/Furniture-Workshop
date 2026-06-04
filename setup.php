@@ -25,9 +25,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $pdo->exec($stmt);
                     $done++;
                 } catch (PDOException $e) {
-                    if (strpos($e->getMessage(), 'Duplicate') === false &&
-                        strpos($e->getMessage(), 'already exists') === false) {
-                        $errors[] = $e->getMessage();
+                    $msg = $e->getMessage();
+                    // Silently ignore idempotent re-run errors (migrations)
+                    $silent = (
+                        strpos($msg, 'Duplicate') !== false ||
+                        strpos($msg, 'already exists') !== false ||
+                        strpos($msg, "check that column exists") !== false ||
+                        strpos($msg, "check that key exists") !== false ||
+                        strpos($msg, "Unknown table") !== false
+                    );
+                    if (!$silent) {
+                        $errors[] = $msg;
                     }
                 }
             }

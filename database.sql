@@ -230,15 +230,49 @@ INSERT IGNORE INTO `categories` (`name`, `slug`, `display_order`) VALUES
 -- ============================================================
 -- 11. Transactions
 -- ============================================================
-CREATE TABLE IF NOT EXISTS `transactions` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `item_id` INT DEFAULT NULL,
-    `item_title` VARCHAR(255) NOT NULL,
-    `buyer_name` VARCHAR(255) NOT NULL,
-    `buyer_email` VARCHAR(255) DEFAULT '',
-    `amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    `payment_method` VARCHAR(50) DEFAULT 'cash',
-    `status` VARCHAR(20) DEFAULT 'completed',
-    `notes` TEXT,
-    `transaction_date` DATETIME DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+-- Removed in v3 — this is a portfolio + reservation site, not a shop.
+-- Replaced by direct contact-form inquiries (contact_submissions).
+-- See MIGRATIONS section below for the DROP.
+-- (Table definition kept commented out for historical reference only.)
+-- CREATE TABLE IF NOT EXISTS `transactions` (
+--     `id` INT AUTO_INCREMENT PRIMARY KEY,
+--     `item_id` INT DEFAULT NULL,
+--     `item_title` VARCHAR(255) NOT NULL,
+--     `buyer_name` VARCHAR(255) NOT NULL,
+--     `buyer_email` VARCHAR(255) DEFAULT '',
+--     `amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+--     `payment_method` VARCHAR(50) DEFAULT 'cash',
+--     `status` VARCHAR(20) DEFAULT 'completed',
+--     `notes` TEXT,
+--     `transaction_date` DATETIME DEFAULT CURRENT_TIMESTAMP
+-- ) ENGINE=InnoDB;
+
+-- ============================================================
+-- MIGRATIONS — Idempotent schema upgrades (safe to re-run)
+-- ============================================================
+-- Each statement is intentionally simple. Re-runs produce "Duplicate
+-- column" or "check that column exists" errors which setup.php
+-- silently ignores via its error filter.
+
+-- Drop dead e-commerce tables
+DROP TABLE IF EXISTS `transactions`;
+DROP TABLE IF EXISTS `users`;
+
+-- Add email / verification / reset columns to admin_users
+ALTER TABLE `admin_users` ADD COLUMN `email`              VARCHAR(255) DEFAULT NULL  AFTER `username`;
+ALTER TABLE `admin_users` ADD COLUMN `email_verified`     TINYINT(1)   NOT NULL DEFAULT 0 AFTER `email`;
+ALTER TABLE `admin_users` ADD COLUMN `verification_token` VARCHAR(64)  DEFAULT NULL  AFTER `email_verified`;
+ALTER TABLE `admin_users` ADD COLUMN `reset_token`        VARCHAR(64)  DEFAULT NULL  AFTER `verification_token`;
+ALTER TABLE `admin_users` ADD COLUMN `reset_expires`      DATETIME     DEFAULT NULL  AFTER `reset_token`;
+
+-- Backfill the existing 'admin' row with a placeholder email + verified=1
+-- (so the current login keeps working without interruption)
+UPDATE `admin_users` SET `email` = 'admin@antiqueworkshop.local', `email_verified` = 1
+ WHERE `username` = 'admin' AND (`email` IS NULL OR `email` = '');
+
+-- Drop e-commerce columns from gallery_items
+ALTER TABLE `gallery_items` DROP COLUMN `quantity`;
+ALTER TABLE `gallery_items` DROP COLUMN `sku`;
+
+-- Tighten gallery_items.status to portfolio-relevant values
+ALTER TABLE `gallery_items` MODIFY COLUMN `status` VARCHAR(20) NOT NULL DEFAULT 'on_display';

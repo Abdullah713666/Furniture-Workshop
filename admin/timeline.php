@@ -170,5 +170,4 @@ $events = $db->query("SELECT * FROM timeline_events ORDER BY display_order ASC")
             </table>
         </main>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

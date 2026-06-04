@@ -189,5 +189,4 @@ $categories = $db->query("SELECT c.*, (SELECT COUNT(*) FROM gallery_items g WHER
             </table>
         </main>
     </div>
-</body>
-</html>
+<?php require_once __DIR__ . '/includes/particles.php'; ?>

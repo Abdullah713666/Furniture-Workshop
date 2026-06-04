@@ -7,11 +7,13 @@
  */
 require_once 'config/init.php';
 
-// reCAPTCHA keys — replace with your own for production
-// Get your keys at: https://www.google.com/recaptcha/admin
-// These are Google's TEST keys that always pass (use ONLY for localhost testing)
-define('RECAPTCHA_SITE_KEY', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
-define('RECAPTCHA_SECRET_KEY', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
+// reCAPTCHA keys — read from environment, fall back to Google's test keys (localhost only)
+// Get your own keys at: https://www.google.com/recaptcha/admin
+// Set RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY in Railway env vars / .env for production.
+define('RECAPTCHA_SITE_KEY',   getenv('RECAPTCHA_SITE_KEY')   ?: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
+define('RECAPTCHA_SECRET_KEY', getenv('RECAPTCHA_SECRET_KEY') ?: '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
+define('RECAPTCHA_SITE_KEY_ADMIN',   getenv('RECAPTCHA_SITE_KEY_ADMIN')   ?: RECAPTCHA_SITE_KEY);
+define('RECAPTCHA_SECRET_KEY_ADMIN', getenv('RECAPTCHA_SECRET_KEY_ADMIN') ?: RECAPTCHA_SECRET_KEY);
 define('MAX_WORDS', 250);
 
 // ============================================================

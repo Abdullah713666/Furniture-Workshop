@@ -31,10 +31,6 @@ $current_admin_page = $current_admin_page ?? 'dashboard';
                 <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
                 <span>Inventory</span>
             </a>
-            <a href="transactions.php"<?php if ($current_admin_page === 'transactions') echo ' class="active"'; ?>>
-                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-                <span>Sales</span>
-            </a>
             <a href="reports.php"<?php if ($current_admin_page === 'reports') echo ' class="active"'; ?>>
                 <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                 <span>Reports</span>
@@ -51,10 +47,6 @@ $current_admin_page = $current_admin_page ?? 'dashboard';
             <a href="faqs.php"<?php if ($current_admin_page === 'faqs') echo ' class="active"'; ?>>
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 <span>FAQs</span>
-            </a>
-            <a href="users.php"<?php if ($current_admin_page === 'users') echo ' class="active"'; ?>>
-                <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                <span>Users</span>
             </a>
             <div class="divider"></div>
             <a href="settings.php"<?php if ($current_admin_page === 'settings') echo ' class="active"'; ?>>
