@@ -167,10 +167,10 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Default admin user (password: admin123) — CHANGE THIS after first login!
--- Hash generated with password_hash('admin123', PASSWORD_BCRYPT)
+-- Default admin user (password: admin) — CHANGE THIS after first login!
+-- Hash generated with password_hash('admin', PASSWORD_BCRYPT)
 INSERT INTO `admin_users` (`username`, `password_hash`) VALUES
-('admin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
+('admin', '$2y$10$NeIsTL7ySYC8fgnzxfSZnOMozF0ewnwE64Vu0uPCzOJF.fPETdoGq');
 
 -- ============================================================
 -- 8. Site Users (Public Login / Signup)
@@ -269,6 +269,10 @@ ALTER TABLE `admin_users` ADD COLUMN `reset_expires`      DATETIME     DEFAULT N
 -- (so the current login keeps working without interruption)
 UPDATE `admin_users` SET `email` = 'admin@antiqueworkshop.local', `email_verified` = 1
  WHERE `username` = 'admin' AND (`email` IS NULL OR `email` = '');
+
+-- Fix the default admin password hash to match 'admin' (the old hash was wrong)
+UPDATE `admin_users` SET `password_hash` = '$2y$10$NeIsTL7ySYC8fgnzxfSZnOMozF0ewnwE64Vu0uPCzOJF.fPETdoGq'
+ WHERE `username` = 'admin';
 
 -- Drop e-commerce columns from gallery_items
 ALTER TABLE `gallery_items` DROP COLUMN `quantity`;
