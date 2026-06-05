@@ -130,9 +130,33 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
                     <?php echo nl2br(htmlspecialchars($view_message['message'])); ?>
                 </div>
             </div>
-            <div style="display: flex; gap: 8px; margin-bottom: 30px;">
+            <?php
+            $visitor_email = $view_message['email'];
+            $visitor_name  = $view_message['name'];
+            $service       = $view_message['service_interest'];
+            $date_str      = date('M j, Y \a\t g:i A', strtotime($view_message['submitted_at']));
+            $original_msg  = $view_message['message'];
+
+            $subject = "Re: Antique Workshop inquiry \u{2014} {$visitor_name}";
+            $body    = "Hello {$visitor_name},\n\n"
+                     . "Thank you for your inquiry about {$service}.\n\n"
+                     . "[Your reply here]\n\n"
+                     . "---\n"
+                     . "Original message ({$date_str}):\n"
+                     . "{$original_msg}";
+
+            $gmail_url = 'https://mail.google.com/mail/?view=cm&to=' . urlencode($visitor_email)
+                       . '&su=' . urlencode($subject)
+                       . '&body=' . urlencode($body);
+
+            $mailto_url = 'mailto:' . htmlspecialchars($visitor_email, ENT_QUOTES)
+                        . '?subject=' . urlencode($subject)
+                        . '&body=' . urlencode($body);
+            ?>
+            <div style="display: flex; gap: 8px; margin-bottom: 30px; flex-wrap: wrap;">
                 <a href="messages.php" class="btn btn-outline">← Back to all messages</a>
-                <a href="mailto:<?php echo htmlspecialchars($view_message['email']); ?>" class="btn btn-primary">Reply via Email</a>
+                <a href="<?php echo $gmail_url; ?>" target="_blank" rel="noopener" class="btn btn-primary">Reply via Gmail</a>
+                <a href="<?php echo $mailto_url; ?>" class="btn btn-outline">Open in mail app</a>
                 <form method="POST" action="messages.php" style="display:inline;" onsubmit="return confirm('Delete this message?')">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <input type="hidden" name="action" value="delete">
