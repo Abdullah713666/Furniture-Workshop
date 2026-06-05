@@ -2,8 +2,8 @@
 /**
  * Forgot Password — Antique Furniture Workshop
  *
- * GET  → shows the "enter your username" form
- * POST → looks up the admin, generates a 1-hour reset token,
+ * GET  → shows the "enter your username or email" form
+ * POST → looks up the admin (by username OR email), generates a 1-hour reset token,
  *        emails a link to admin/reset_password.php?token=…
  */
 require_once __DIR__ . '/auth.php';
@@ -37,16 +37,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die('Invalid CSRF token.');
     }
 
-    $username = trim($_POST['username'] ?? '');
+    $identifier = trim($_POST['identifier'] ?? $_POST['username'] ?? '');
 
-    if ($username === '') {
-        $message = 'Please enter your username.';
+    if ($identifier === '') {
+        $message = 'Please enter your username or email.';
         $message_type = 'error';
     } else {
         try {
             $db = getDB();
-            $stmt = $db->prepare("SELECT id, username, email, email_verified FROM admin_users WHERE username = ?");
-            $stmt->execute([$username]);
+            $is_email = filter_var($identifier, FILTER_VALIDATE_EMAIL) !== false;
+            if ($is_email) {
+                $stmt = $db->prepare("SELECT id, username, email, email_verified FROM admin_users WHERE email = ?");
+            } else {
+                $stmt = $db->prepare("SELECT id, username, email, email_verified FROM admin_users WHERE username = ?");
+            }
+            $stmt->execute([$identifier]);
             $user = $stmt->fetch();
 
             // Always show the same generic message to prevent user enumeration
@@ -102,7 +107,7 @@ $csrf_token = $_SESSION['csrf_token'];
     <div class="login-container">
         <div class="login-card">
             <h1>Forgot Password</h1>
-            <p>Enter your admin username. If the account has a verified email, we'll send a reset link.</p>
+            <p>Enter your admin username or email. If the account has a verified email, we'll send a reset link.</p>
 
             <?php if ($message): ?>
             <div class="alert alert-<?php echo $message_type === 'success' ? 'success' : 'error'; ?>">
@@ -114,8 +119,8 @@ $csrf_token = $_SESSION['csrf_token'];
                 <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
 
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required autofocus>
+                    <label for="identifier">Username or Email</label>
+                    <input type="text" class="form-control" id="identifier" name="identifier" required autofocus autocomplete="username">
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block" style="margin-top: 8px;">Send Reset Link</button>
