@@ -91,15 +91,6 @@ button, input, select, textarea {
   outline-offset: 3px;
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
-  html { scroll-behavior: auto; }
-}
-
 /* ---------- Container ---------- */
 .container {
   width: 100%;
