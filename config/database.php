@@ -52,6 +52,14 @@ function getDB() {
             error_log("Antique Workshop DB Error: " . $e->getMessage());
             die("Database connection failed. Please make sure MySQL is running and the database has been set up.");
         }
+
+        // Self-heal: migrate .png image paths to .jpg (images were converted)
+        try {
+            $pdo->exec("UPDATE `gallery_items` SET `image_path` = REPLACE(`image_path`, '.png', '.jpg') WHERE `image_path` LIKE '%.png'");
+            $pdo->exec("UPDATE `services` SET `image_path` = REPLACE(`image_path`, '.png', '.jpg') WHERE `image_path` LIKE '%.png'");
+        } catch (Exception $e) {
+            // Ignore — table may not exist yet on fresh install
+        }
     }
     
     return $pdo;
