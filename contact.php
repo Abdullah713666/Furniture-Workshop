@@ -155,12 +155,12 @@ $active_page = 'contact';
 
 // Get settings from DB for contact info
 $db = getDB();
-$phone_number  = getSetting('phone', '+1 (555) 019-2834');
-$email_address = getSetting('email', 'hello@antiqueworkshop.com');
-$address1      = getSetting('address_line1', '123 Heritage Lane');
-$address2      = getSetting('address_line2', 'Craftsmanship City, CA 90210');
-$working_hours = getSetting('working_hours', 'Mon-Fri, 9am - 6pm');
-$map_embed_url = getSetting('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=-0.1378%2C51.5037%2C-0.1069%2C51.5204&layer=mapnik&marker=51.5121%2C-0.1224');
+$phone_number  = getSetting('phone', '');
+$email_address = getSetting('email', 'abdulla257893989@gmail.com');
+$address1      = getSetting('address_line1', 'Sargodha');
+$address2      = getSetting('address_line2', 'Punjab, Pakistan');
+$working_hours = getSetting('working_hours', 'Mon-Sat, 9am - 6pm');
+$map_embed_url = getSetting('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=72.65%2C32.07%2C72.71%2C32.10&layer=mapnik&marker=32.0826%2C72.6796');
 
 require_once 'includes/header.php';
 ?>
@@ -263,6 +263,7 @@ require_once 'includes/header.php';
                 </div>
             </div>
 
+            <?php if (!empty($phone_number)): ?>
             <div class="contact-detail">
                 <div class="contact-detail-icon">
                     <svg viewBox="0 0 24 24">
@@ -274,6 +275,7 @@ require_once 'includes/header.php';
                     <p><?php echo htmlspecialchars($working_hours); ?></p>
                 </div>
             </div>
+            <?php endif; ?>
 
             <div class="contact-detail">
                 <div class="contact-detail-icon">

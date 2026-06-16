@@ -60,6 +60,18 @@ function getDB() {
         } catch (Exception $e) {
             // Ignore — table may not exist yet on fresh install
         }
+
+        // Self-heal: update contact info defaults
+        try {
+            $pdo->exec("UPDATE `site_settings` SET `setting_value` = 'abdulla257893989@gmail.com' WHERE `setting_key` = 'email' AND `setting_value` = 'hello@antiqueworkshop.com'");
+            $pdo->exec("UPDATE `site_settings` SET `setting_value` = 'Sargodha' WHERE `setting_key` = 'address_line1' AND `setting_value` = '123 Heritage Lane'");
+            $pdo->exec("UPDATE `site_settings` SET `setting_value` = 'Punjab, Pakistan' WHERE `setting_key` = 'address_line2' AND `setting_value` = 'Craftsmanship City, CA 90210'");
+            $pdo->exec("UPDATE `site_settings` SET `setting_value` = '' WHERE `setting_key` = 'phone' AND `setting_value` != ''");
+            $pdo->exec("UPDATE `site_settings` SET `setting_value` = 'https://www.openstreetmap.org/export/embed.html?bbox=72.65%2C32.07%2C72.71%2C32.10&layer=mapnik&marker=32.0826%2C72.6796' WHERE `setting_key` = 'map_embed_url'");
+            $pdo->exec("UPDATE `site_settings` SET `setting_value` = 'Mon-Sat, 9am - 6pm' WHERE `setting_key` = 'working_hours'");
+        } catch (Exception $e) {
+            // Ignore
+        }
     }
     
     return $pdo;

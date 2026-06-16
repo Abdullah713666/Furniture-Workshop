@@ -146,15 +146,15 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('site_name', 'Antique Workshop'),
 ('site_tagline', 'The Art of Restoration'),
 ('site_description', 'Expert antique furniture restoration, custom commissions, and conservation services. Preserving the past for the future since 1985.'),
-('phone', '+1 (555) 019-2834'),
-('email', 'hello@antiqueworkshop.com'),
-('address_line1', '123 Heritage Lane'),
-('address_line2', 'Craftsmanship City, CA 90210'),
-('working_hours', 'Mon-Fri, 9am - 6pm'),
+('phone', ''),
+('email', 'abdulla257893989@gmail.com'),
+('address_line1', 'Sargodha'),
+('address_line2', 'Punjab, Pakistan'),
+('working_hours', 'Mon-Sat, 9am - 6pm'),
 ('instagram_url', '#'),
 ('twitter_url', '#'),
 ('copyright_year', '2024'),
-('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=-0.1378%2C51.5037%2C-0.1069%2C51.5204&layer=mapnik&marker=51.5121%2C-0.1224'),
+('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=72.65%2C32.07%2C72.71%2C32.10&layer=mapnik&marker=32.0826%2C72.6796'),
 ('philosophy_text', 'We believe restoration is an act of preservation—not just of wood and fabric, but of history itself. Every scratch tells a story, every grain holds a memory. Our mission is to honor the original artisan''s hand while breathing new life into timeless pieces.');
 
 -- ============================================================
