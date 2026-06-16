@@ -1,23 +1,12 @@
 ﻿<?php
 /**
- * Application Initialization â€” Antique Furniture Workshop
- * 
+ * Application Initialization — Antique Furniture Workshop
+ *
  * Loads database config, sets security headers, and starts the session.
  * Include this instead of config/database.php when you need session/headers.
  */
-require_once __DIR__ . '/database.php';
 
-// Set global security headers to protect against clickjacking, MIME sniffing, and XSS
-if (!headers_sent()) {
-    header('X-Frame-Options: DENY');
-    header('X-Content-Type-Options: nosniff');
-    header('X-XSS-Protection: 1; mode=block');
-    header('Referrer-Policy: strict-origin-when-cross-origin');
-    // CSP: restrict sources to reduce XSS impact
-    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google.com; frame-src https://www.google.com https://www.openstreetmap.org; frame-ancestors 'none'");
-}
-
-// Start session for admin/user auth with hardened cookie settings (HttpOnly, SameSite, Secure)
+// Start session FIRST — before any output or includes
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
         'lifetime' => 0,
@@ -28,6 +17,17 @@ if (session_status() === PHP_SESSION_NONE) {
         'samesite' => 'Strict'
     ]);
     session_start();
+}
+
+require_once __DIR__ . '/database.php';
+
+// Set global security headers to protect against clickjacking, MIME sniffing, and XSS
+if (!headers_sent()) {
+    header('X-Frame-Options: DENY');
+    header('X-Content-Type-Options: nosniff');
+    header('X-XSS-Protection: 1; mode=block');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com https://cdnjs.cloudflare.com https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://www.google.com; frame-src https://www.google.com https://www.openstreetmap.org; frame-ancestors 'none'");
 }
 
 // --- Brute-force lockout helpers (IP-based, file-backed) ---
@@ -47,7 +47,6 @@ function bf_record_failed(string $ip): int {
         $raw = @file_get_contents($file);
         $data = json_decode($raw, true) ?: $data;
     }
-    // If currently locked out, just return remaining attempts as 0
     if (isset($data['lockout_until']) && $data['lockout_until'] > time()) {
         return 0;
     }
