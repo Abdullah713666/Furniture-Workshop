@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Dashboard â€” Antique Furniture Workshop
+ * Admin Dashboard  Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -30,7 +30,7 @@ $recent_messages = $db->query("SELECT * FROM contact_submissions ORDER BY submit
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard â€” Admin</title>
+    <title>Dashboard  Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -99,13 +99,13 @@ $recent_messages = $db->query("SELECT * FROM contact_submissions ORDER BY submit
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <p style="margin-top: 12px;"><a href="messages.php">View all messages â†’</a></p>
+                <p style="margin-top: 12px;"><a href="messages.php">View all messages </a></p>
                 <?php endif; ?>
             </div>
         </main>
     </div>
     <script>
-        // Session check â€” redirect to login if not authenticated
+        // Session check  redirect to login if not authenticated
         (function() {
             // Server-side session handles auth; no client-side token needed
         })();

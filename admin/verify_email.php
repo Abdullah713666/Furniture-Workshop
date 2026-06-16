@@ -1,8 +1,8 @@
 <?php
 /**
- * Verify Email â€” Antique Furniture Workshop
+ * Verify Email  Antique Furniture Workshop
  *
- * GET ?token=â€¦   â†’ consumes the verification token, flips email_verified=1, redirects to login
+ * GET ?token=    consumes the verification token, flips email_verified=1, redirects to login
  */
 require_once __DIR__ . '/auth.php';
 
@@ -48,13 +48,13 @@ if ($token === '') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verify Email â€” Antique Workshop</title>
+    <title>Verify Email  Antique Workshop</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="login-container">
         <div class="login-card" style="text-align: center;">
-            <h1><?php echo $message_type === 'success' ? 'âœ“' : 'âš '; ?></h1>
+            <h1><?php echo $message_type === 'success' ? '' : ''; ?></h1>
             <p style="margin-top: 12px;"><?php echo htmlspecialchars($message); ?></p>
 
             <?php if ($message_type === 'success'): ?>

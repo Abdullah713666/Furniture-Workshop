@@ -1,6 +1,6 @@
 <?php
 /**
- * Shared Header â€” Antique Furniture Workshop
+ * Shared Header  Antique Furniture Workshop
  * 
  * Include this at the top of every public page.
  * Before including, set: $page_title, $page_description, $active_page

@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Login â€” Antique Furniture Workshop
+ * Admin Login  Antique Furniture Workshop
  */
 require_once __DIR__ . '/auth.php';
 
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
                 $hasEmail = !empty($user['email']);
                 $verified = isset($user['email_verified']) ? intval($user['email_verified']) === 1 : true;
                 if ($hasEmail && !$verified) {
-                    $error = 'Please verify your email address before signing in. Check your inbox for the verification link, or use â€œForgot passwordâ€ to receive a new email.';
+                    $error = 'Please verify your email address before signing in. Check your inbox for the verification link, or use Forgot password to receive a new email.';
                 } else {
                     bf_reset($ip);
 
@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login â€” Antique Workshop</title>
+    <title>Admin Login  Antique Workshop</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .pw-wrapper { position: relative; }
@@ -129,8 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
 <body>
     <div class="login-container">
         <div class="login-card">
-            <h1>ðŸ” Admin Panel</h1>
-            <p>Antique Furniture Workshop â€” Content Management</p>
+            <h1> Admin Panel</h1>
+            <p>Antique Furniture Workshop  Content Management</p>
 
             <?php if ($error): ?>
             <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
@@ -170,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
                 <a href="forgot_password.php">Forgot password?</a>
             </p>
             <p style="text-align: center; margin-top: 8px; font-size: 0.8rem;">
-                <a href="../index.php">â† Back to website</a>
+                <a href="../index.php"> Back to website</a>
             </p>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Services CRUD â€” Antique Furniture Workshop
+ * Admin Services CRUD  Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     $description = trim($_POST['description'] ?? '');
     $image_path = trim($_POST['image_path'] ?? '');
     $alt_text = trim($_POST['alt_text'] ?? '');
-    $cta_text = trim($_POST['cta_text'] ?? 'Learn More â†’');
+    $cta_text = trim($_POST['cta_text'] ?? 'Learn More ');
     $cta_link = trim($_POST['cta_link'] ?? 'contact.php');
     // Validate cta_link: only allow relative paths, block javascript: and data: schemes
     if (preg_match('#^(javascript|data|vbscript):#i', $cta_link)) {
@@ -156,7 +156,7 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services â€” Admin</title>
+    <title>Services  Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -175,7 +175,7 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
 
             <!-- Form Card (Add/Edit) -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? 'ðŸ“ Edit Service: ' . htmlspecialchars($edit_item['title']) : 'âœ¨ Add New Service'; ?></h2>
+                <h2><?php echo $edit_item ? ' Edit Service: ' . htmlspecialchars($edit_item['title']) : ' Add New Service'; ?></h2>
                 <form method="POST" action="services.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
@@ -215,7 +215,7 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
                     <div class="form-row">
                         <div class="form-group">
                             <label for="cta_text">Button Text</label>
-                            <input type="text" class="form-control" id="cta_text" name="cta_text" value="<?php echo htmlspecialchars($edit_item['cta_text'] ?? 'Learn More â†’'); ?>">
+                            <input type="text" class="form-control" id="cta_text" name="cta_text" value="<?php echo htmlspecialchars($edit_item['cta_text'] ?? 'Learn More '); ?>">
                         </div>
                         <div class="form-group">
                             <label for="cta_link">Button Link</label>

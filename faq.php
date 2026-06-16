@@ -1,11 +1,11 @@
 <?php
 /**
- * FAQ Page â€” Antique Furniture Workshop
+ * FAQ Page  Antique Furniture Workshop
  * Redesigned with accordion cards, search, and polished layout
  */
 require_once 'config/database.php';
 
-$page_title = 'FAQs â€” Antique Furniture Workshop';
+$page_title = 'FAQs  Antique Furniture Workshop';
 $page_description = 'Frequently asked questions about antique restoration, pricing, and our workshop services.';
 $active_page = 'faq';
 

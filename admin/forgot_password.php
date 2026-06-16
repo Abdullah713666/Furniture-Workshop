@@ -1,10 +1,10 @@
 <?php
 /**
- * Forgot Password â€” Antique Furniture Workshop
+ * Forgot Password  Antique Furniture Workshop
  *
- * GET  â†’ shows the "enter your username or email" form
- * POST â†’ looks up the admin (by username OR email), generates a 1-hour reset token,
- *        emails a link to admin/reset_password.php?token=â€¦
+ * GET   shows the "enter your username or email" form
+ * POST  looks up the admin (by username OR email), generates a 1-hour reset token,
+ *        emails a link to admin/reset_password.php?token=
  */
 require_once __DIR__ . '/auth.php';
 
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $link = afw_base_url() . '/admin/reset_password.php?token=' . urlencode($token);
 
                 $html = '<div style="font-family: Georgia, serif; max-width: 560px; margin: 0 auto; color: #1a1410;">'
-                      . '<h2 style="color: #6b5020;">Password Reset â€” Antique Workshop Admin</h2>'
+                      . '<h2 style="color: #6b5020;">Password Reset  Antique Workshop Admin</h2>'
                       . '<p>Hello ' . htmlspecialchars($user['username']) . ',</p>'
                       . '<p>Someone (hopefully you) requested a password reset for the Antique Workshop admin panel.</p>'
                       . '<p>Click the button below within the next <strong>1 hour</strong> to set a new password:</p>'
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       . '<p>Or paste this link into your browser:<br><span style="color:#6b5020;">'
                       . htmlspecialchars($link) . '</span></p>'
                       . '<hr style="border:none;border-top:1px solid #d4a843;margin:24px 0;">'
-                      . '<p style="color:#8a7e6e;font-size:0.85em;">If you did not request this, you can safely ignore this email â€” your password will remain unchanged.</p>'
+                      . '<p style="color:#8a7e6e;font-size:0.85em;">If you did not request this, you can safely ignore this email  your password will remain unchanged.</p>'
                       . '</div>';
 
                 afw_send_email($user['email'], 'Reset your admin password', $html);
@@ -100,7 +100,7 @@ $csrf_token = $_SESSION['csrf_token'];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password â€” Antique Workshop</title>
+    <title>Forgot Password  Antique Workshop</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -127,7 +127,7 @@ $csrf_token = $_SESSION['csrf_token'];
             </form>
 
             <p style="text-align: center; margin-top: 20px; font-size: 0.8rem;">
-                <a href="login.php">â† Back to Sign In</a>
+                <a href="login.php"> Back to Sign In</a>
             </p>
         </div>
     </div>

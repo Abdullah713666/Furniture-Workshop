@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Gallery CRUD â€” Antique Furniture Workshop
+ * Admin Gallery CRUD  Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -152,7 +152,7 @@ $items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC, cre
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery â€” Admin</title>
+    <title>Gallery  Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -171,7 +171,7 @@ $items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC, cre
 
             <!-- Form Card (Add/Edit) -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? 'ðŸ“ Edit Item: ' . htmlspecialchars($edit_item['title']) : 'âœ¨ Add New Item'; ?></h2>
+                <h2><?php echo $edit_item ? ' Edit Item: ' . htmlspecialchars($edit_item['title']) : ' Add New Item'; ?></h2>
                 <form method="POST" action="gallery.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
@@ -267,7 +267,7 @@ $items = $db->query("SELECT * FROM gallery_items ORDER BY display_order ASC, cre
                                 <input type="hidden" name="action" value="toggle_featured">
                                 <input type="hidden" name="id" value="<?php echo $item['id']; ?>">
                                 <button type="submit" class="badge <?php echo $item['is_featured'] ? 'badge-featured' : 'badge-read'; ?>" style="cursor:pointer; border:none; background:none; font-family:inherit;">
-                                    <?php echo $item['is_featured'] ? 'â˜… Featured' : 'No'; ?>
+                                    <?php echo $item['is_featured'] ? ' Featured' : 'No'; ?>
                                 </button>
                             </form>
                         </td>

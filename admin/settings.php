@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Settings â€” Antique Furniture Workshop
+ * Admin Settings  Antique Furniture Workshop
  * Change admin username and password
  */
 require_once 'auth.php';
@@ -164,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings â€” Admin</title>
+    <title>Settings  Admin</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .pw-wrapper { position: relative; }
@@ -195,9 +195,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-card">
                 <h2>Email Address <?php if (!empty($admin['email'])): ?>
                     <?php if (intval($admin['email_verified']) === 1): ?>
-                        <span class="badge badge-featured" style="font-size:0.7rem; vertical-align: middle;">âœ“ Verified</span>
+                        <span class="badge badge-featured" style="font-size:0.7rem; vertical-align: middle;"> Verified</span>
                     <?php else: ?>
-                        <span class="badge badge-unread" style="font-size:0.7rem; vertical-align: middle;">âš  Unverified</span>
+                        <span class="badge badge-unread" style="font-size:0.7rem; vertical-align: middle;"> Unverified</span>
                     <?php endif; ?>
                 <?php endif; ?></h2>
                 <p style="font-size:0.85rem; color: var(--admin-text-muted);">

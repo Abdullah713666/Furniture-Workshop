@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Categories CRUD â€” Antique Furniture Workshop
+ * Admin Categories CRUD  Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -84,7 +84,7 @@ $categories = $db->query("SELECT c.*, (SELECT COUNT(*) FROM gallery_items g WHER
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categories â€” Admin</title>
+    <title>Categories  Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>

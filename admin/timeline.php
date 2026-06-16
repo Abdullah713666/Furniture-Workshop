@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Timeline CRUD â€” Antique Furniture Workshop
+ * Admin Timeline CRUD  Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -89,7 +89,7 @@ $events = $db->query("SELECT * FROM timeline_events ORDER BY display_order ASC")
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline â€” Admin</title>
+    <title>Timeline  Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -108,7 +108,7 @@ $events = $db->query("SELECT * FROM timeline_events ORDER BY display_order ASC")
 
             <!-- Add/Edit Form -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? 'ðŸ“ Edit Event' : 'âœ¨ Add New Event'; ?></h2>
+                <h2><?php echo $edit_item ? ' Edit Event' : ' Add New Event'; ?></h2>
                 <form method="POST" action="timeline.php">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Database Configuration â€” Antique Furniture Workshop
+ * Database Configuration  Antique Furniture Workshop
  * 
  * Uses PDO for secure database connections.
  * Update the credentials below to match your MySQL setup.
@@ -8,14 +8,14 @@
 
 // Detect environment: Railway / InfinityFree / local XAMPP
 if (getenv('MYSQLHOST')) {
-    // Railway â€” uses built-in MySQL service env vars
+    // Railway  uses built-in MySQL service env vars
     define('DB_HOST', getenv('MYSQLHOST'));
     define('DB_NAME', getenv('MYSQLDATABASE') ?: 'antique_workshop');
     define('DB_USER', getenv('MYSQLUSER') ?: 'root');
     define('DB_PASS', getenv('MYSQLPASSWORD') ?: getenv('MYSQL_ROOT_PASSWORD') ?: '');
     define('DB_PORT', getenv('MYSQLPORT') ?: '3306');
 } elseif (getenv('DB_HOST')) {
-    // Production (env vars â€” set on InfinityFree, Railway, or any host)
+    // Production (env vars  set on InfinityFree, Railway, or any host)
     define('DB_HOST', getenv('DB_HOST'));
     define('DB_NAME', getenv('DB_NAME') ?: 'antique_workshop');
     define('DB_USER', getenv('DB_USER') ?: 'root');

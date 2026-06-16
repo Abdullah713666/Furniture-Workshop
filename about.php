@@ -1,11 +1,11 @@
 <?php
 /**
- * About Page â€” Antique Furniture Workshop
+ * About Page  Antique Furniture Workshop
  * Dynamic version: fetches timeline events from database
  */
 require_once 'config/database.php';
 
-$page_title = 'About Us â€” Antique Furniture Workshop';
+$page_title = 'About Us  Antique Furniture Workshop';
 $page_description = 'Learn about our legacy of antique furniture restoration since 1985. Master craftsmen preserving history one piece at a time.';
 $active_page = 'about';
 
@@ -19,7 +19,7 @@ $philosophy = getSetting('philosophy_text', 'We believe restoration is an act of
 require_once 'includes/header.php';
 ?>
 
-    <!-- ==================== ABOUT HERO â€” Image + Text Overlay ==================== -->
+    <!-- ==================== ABOUT HERO  Image + Text Overlay ==================== -->
     <section class="about-hero-overlay">
         <div class="about-hero-content">
             <h2><em>Legacy<br>& Craft</em></h2>

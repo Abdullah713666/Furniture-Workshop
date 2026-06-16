@@ -45,6 +45,6 @@ function afw_ensure_auth_schema(): void {
             $db->exec("ALTER TABLE admin_users ADD COLUMN reset_expires      DATETIME     DEFAULT NULL  AFTER reset_token");
         }
     } catch (Exception $e) {
-        // ignore â€” if columns truly missing the downstream query will surface a clearer error
+        // ignore  if columns truly missing the downstream query will surface a clearer error
     }
 }

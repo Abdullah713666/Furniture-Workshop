@@ -1,9 +1,9 @@
 <?php
 /**
- * Reset Password â€” Antique Furniture Workshop
+ * Reset Password  Antique Furniture Workshop
  *
- * GET  ?token=â€¦   â†’ shows the "set a new password" form
- * POST            â†’ validates the token, updates the password hash, redirects to login
+ * GET  ?token=    shows the "set a new password" form
+ * POST             validates the token, updates the password hash, redirects to login
  */
 require_once __DIR__ . '/auth.php';
 
@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password â€” Antique Workshop</title>
+    <title>Reset Password  Antique Workshop</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .pw-wrapper { position: relative; }
@@ -141,12 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
             </form>
             <?php else: ?>
             <p style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
-                <a href="forgot_password.php">â† Request a new reset link</a>
+                <a href="forgot_password.php"> Request a new reset link</a>
             </p>
             <?php endif; ?>
 
             <p style="text-align: center; margin-top: 20px; font-size: 0.8rem;">
-                <a href="login.php">â† Back to Sign In</a>
+                <a href="login.php"> Back to Sign In</a>
             </p>
         </div>
     </div>

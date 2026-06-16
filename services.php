@@ -1,11 +1,11 @@
 <?php
 /**
- * Services Page â€” Antique Furniture Workshop
+ * Services Page  Antique Furniture Workshop
  * Dynamic version: fetches services from database
  */
 require_once 'config/database.php';
 
-$page_title = 'Our Services â€” Antique Furniture Workshop';
+$page_title = 'Our Services  Antique Furniture Workshop';
 $page_description = 'Expert antique restoration, custom commissions, and professional consultation services. Master craftsmanship preserving history.';
 $active_page = 'services';
 

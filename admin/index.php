@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin Hub / Index â€” Antique Furniture Workshop
+ * Admin Hub / Index  Antique Furniture Workshop
  * Premium landing page for the admin area
  */
 require_once __DIR__ . '/../config/init.php';
@@ -33,7 +33,7 @@ else $greeting = 'Good Evening';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel â€” Antique Furniture Workshop</title>
+    <title>Admin Panel  Antique Furniture Workshop</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         /* --------- Reset & Variables --------- */
@@ -472,7 +472,7 @@ else $greeting = 'Good Evening';
                     <div class="card-title">Dashboard</div>
                     <div class="card-desc">Overview of your site activity, recent messages, and quick stats.</div>
                 </div>
-                <span class="arrow">â†’</span>
+                <span class="arrow"></span>
             </a>
 
             <a href="gallery.php" class="nav-card">
@@ -486,7 +486,7 @@ else $greeting = 'Good Evening';
                     <div class="card-title">Gallery</div>
                     <div class="card-desc">Manage your collection pieces, featured items, and image uploads.</div>
                 </div>
-                <span class="arrow">â†’</span>
+                <span class="arrow"></span>
             </a>
 
             <a href="services.php" class="nav-card">
@@ -500,7 +500,7 @@ else $greeting = 'Good Evening';
                     <div class="card-title">Services</div>
                     <div class="card-desc">Add or edit restoration, commission, and consultation services.</div>
                 </div>
-                <span class="arrow">â†’</span>
+                <span class="arrow"></span>
             </a>
 
             <a href="messages.php" class="nav-card">
@@ -514,7 +514,7 @@ else $greeting = 'Good Evening';
                     <div class="card-title">Messages</div>
                     <div class="card-desc">Read and reply to contact form submissions from visitors.</div>
                 </div>
-                <span class="arrow">â†’</span>
+                <span class="arrow"></span>
             </a>
 
             <a href="timeline.php" class="nav-card">
@@ -528,7 +528,7 @@ else $greeting = 'Good Evening';
                     <div class="card-title">Timeline</div>
                     <div class="card-desc">Manage heritage milestones displayed on the About page.</div>
                 </div>
-                <span class="arrow">â†’</span>
+                <span class="arrow"></span>
             </a>
         </div>
 
@@ -562,7 +562,7 @@ else $greeting = 'Good Evening';
                 Sign In
             </a>
             <br>
-            <a href="../index.php" class="btn-back">â† Back to Website</a>
+            <a href="../index.php" class="btn-back"> Back to Website</a>
         </div>
         <?php endif; ?>
 

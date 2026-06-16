@@ -1,11 +1,11 @@
 <?php
 /**
- * Homepage â€” Antique Furniture Workshop
+ * Homepage  Antique Furniture Workshop
  * Dynamic version: fetches featured pieces from database
  */
 require_once 'config/database.php';
 
-$page_title = 'Antique Furniture Workshop â€” The Art of Restoration';
+$page_title = 'Antique Furniture Workshop  The Art of Restoration';
 $page_description = 'Expert antique furniture restoration, custom commissions, and conservation services. Preserving the past for the future since 1985.';
 $active_page = 'home';
 
@@ -120,7 +120,7 @@ require_once 'includes/header.php';
     <section class="process-section" aria-label="Our restoration process">
         <div class="section-header text-center fade-up" style="padding: 0 20px;">
             <h2 style="text-align:center;">Our <span class="accent-text">Process</span></h2>
-            <p class="section-subtitle" style="margin: 10px auto 0; text-align:center;">From assessment to delivery â€” every step handled with care.</p>
+            <p class="section-subtitle" style="margin: 10px auto 0; text-align:center;">From assessment to delivery  every step handled with care.</p>
         </div>
 
         <div class="process-grid" style="margin-top: 30px;">
@@ -248,7 +248,7 @@ require_once 'includes/header.php';
             <button class="chatbot-close" aria-label="Close chat">&times;</button>
         </div>
         <div class="chatbot-messages">
-            <div class="chat-msg bot">Hello! ðŸ‘‹ I'm the Workshop Assistant. Ask me about our restoration services, pricing, hours, or anything else!</div>
+            <div class="chat-msg bot">Hello! I'm the Workshop Assistant. Ask me about our restoration services, pricing, hours, or anything else!</div>
         </div>
         <div class="chat-suggestions">
             <button class="chat-suggestion-btn">Restoration services</button>

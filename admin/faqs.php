@@ -1,6 +1,6 @@
 <?php
 /**
- * Admin FAQ CRUD â€” Antique Furniture Workshop
+ * Admin FAQ CRUD  Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -88,7 +88,7 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQs â€” Admin</title>
+    <title>FAQs  Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -107,7 +107,7 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
 
             <!-- Add/Edit Form -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? 'ðŸ“ Edit FAQ' : 'âœ¨ Add New FAQ'; ?></h2>
+                <h2><?php echo $edit_item ? ' Edit FAQ' : ' Add New FAQ'; ?></h2>
                 <form method="POST" action="faqs.php">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
