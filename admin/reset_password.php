@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 /**
- * Reset Password — Antique Furniture Workshop
+ * Reset Password â€” Antique Furniture Workshop
  *
- * GET  ?token=…   → shows the "set a new password" form
- * POST            → validates the token, updates the password hash, redirects to login
+ * GET  ?token=â€¦   â†’ shows the "set a new password" form
+ * POST            â†’ validates the token, updates the password hash, redirects to login
  */
 require_once __DIR__ . '/auth.php';
 
@@ -52,7 +52,7 @@ $csrf_token = $_SESSION['csrf_token'];
 // Handle POST (set new password)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
 
     $pw1 = $_POST['password'] ?? '';
@@ -69,7 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
         $upd = $db->prepare("UPDATE admin_users SET password_hash = ?, reset_token = NULL, reset_expires = NULL WHERE id = ?");
         $upd->execute([$hash, $user_id]);
 
-        // Force any existing sessions for this user to require re-login (defence in depth)
+        // Destroy session to force re-login everywhere
+        $_SESSION = [];
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+        }
+        session_destroy();
+
         header('Location: login.php?reset=ok');
         exit;
     }
@@ -80,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reset Password — Antique Workshop</title>
+    <title>Reset Password â€” Antique Workshop</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .pw-wrapper { position: relative; }
@@ -134,12 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
             </form>
             <?php else: ?>
             <p style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
-                <a href="forgot_password.php">← Request a new reset link</a>
+                <a href="forgot_password.php">â† Request a new reset link</a>
             </p>
             <?php endif; ?>
 
             <p style="text-align: center; margin-top: 20px; font-size: 0.8rem;">
-                <a href="login.php">← Back to Sign In</a>
+                <a href="login.php">â† Back to Sign In</a>
             </p>
         </div>
     </div>

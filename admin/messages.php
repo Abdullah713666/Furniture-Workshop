@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Messages — Antique Furniture Workshop
+ * Admin Messages â€” Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -21,7 +21,7 @@ $csrf_token = $_SESSION['csrf_token'];
 // Delete
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
     $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM contact_submissions WHERE id = ?");
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Mark as read
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'mark_read') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
     $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("UPDATE contact_submissions SET is_read = 1 WHERE id = ?");
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Mark all as read
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'mark_all_read') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
     $db->exec("UPDATE contact_submissions SET is_read = 1 WHERE is_read = 0");
     header('Location: messages.php?msg=updated');
@@ -82,7 +82,7 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages — Admin</title>
+    <title>Messages â€” Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -154,7 +154,7 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
                         . '&body=' . urlencode($body);
             ?>
             <div style="display: flex; gap: 8px; margin-bottom: 30px; flex-wrap: wrap;">
-                <a href="messages.php" class="btn btn-outline">← Back to all messages</a>
+                <a href="messages.php" class="btn btn-outline">â† Back to all messages</a>
                 <a href="<?php echo $gmail_url; ?>" target="_blank" rel="noopener" class="btn btn-primary">Reply via Gmail</a>
                 <a href="<?php echo $mailto_url; ?>" class="btn btn-outline">Open in mail app</a>
                 <form method="POST" action="messages.php" style="display:inline;" onsubmit="return confirm('Delete this message?')">

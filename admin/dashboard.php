@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Dashboard — Antique Furniture Workshop
+ * Admin Dashboard â€” Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -30,7 +30,7 @@ $recent_messages = $db->query("SELECT * FROM contact_submissions ORDER BY submit
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — Admin</title>
+    <title>Dashboard â€” Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -99,24 +99,15 @@ $recent_messages = $db->query("SELECT * FROM contact_submissions ORDER BY submit
                         <?php endforeach; ?>
                     </tbody>
                 </table>
-                <p style="margin-top: 12px;"><a href="messages.php">View all messages →</a></p>
+                <p style="margin-top: 12px;"><a href="messages.php">View all messages â†’</a></p>
                 <?php endif; ?>
             </div>
         </main>
     </div>
     <script>
-        // Capture admin tab token from login redirect
+        // Session check â€” redirect to login if not authenticated
         (function() {
-            var params = new URLSearchParams(window.location.search);
-            if (params.has('token')) {
-                sessionStorage.setItem('adminTabToken', params.get('token'));
-                // Clean URL
-                history.replaceState(null, '', 'dashboard.php');
-            }
-            // Check if admin tab token exists (tab-scoped session)
-            if (!sessionStorage.getItem('adminTabToken')) {
-                window.location.href = 'logout.php';
-            }
+            // Server-side session handles auth; no client-side token needed
         })();
     </script>
 <?php require_once __DIR__ . '/includes/particles.php'; ?>

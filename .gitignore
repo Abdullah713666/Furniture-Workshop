@@ -2,3 +2,8 @@ messages.log
 install.php
 scratch/
 *.html
+node_modules/
+package.json
+package-lock.json
+optimize-images.mjs
+data/

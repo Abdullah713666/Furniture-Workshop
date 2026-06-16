@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Services CRUD — Antique Furniture Workshop
+ * Admin Services CRUD â€” Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -21,7 +21,7 @@ $csrf_token = $_SESSION['csrf_token'];
 // Delete
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
     $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM services WHERE id = ?");
@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Toggle active
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'toggle') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
     $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("UPDATE services SET is_active = NOT is_active WHERE id = ?");
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Add / Edit
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
 
     $id = $_POST['id'] ?? '';
@@ -53,8 +53,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     $description = trim($_POST['description'] ?? '');
     $image_path = trim($_POST['image_path'] ?? '');
     $alt_text = trim($_POST['alt_text'] ?? '');
-    $cta_text = trim($_POST['cta_text'] ?? 'Learn More →');
+    $cta_text = trim($_POST['cta_text'] ?? 'Learn More â†’');
     $cta_link = trim($_POST['cta_link'] ?? 'contact.php');
+    // Validate cta_link: only allow relative paths, block javascript: and data: schemes
+    if (preg_match('#^(javascript|data|vbscript):#i', $cta_link)) {
+        $cta_link = 'contact.php';
+    }
     $display_order = intval($_POST['display_order'] ?? 0);
     $is_active = isset($_POST['is_active']) ? 1 : 0;
 
@@ -95,8 +99,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             $message = 'Title and image path are required.';
             $message_type = 'error';
         } else {
-            if ($id) {
-                // Update
+            $len_err = validate_length($title, 200, 'Title')
+                    ?: validate_length($description, 5000, 'Description')
+                    ?: validate_length($alt_text, 255, 'Alt text')
+                    ?: validate_length($cta_text, 100, 'Button text')
+                    ?: validate_length($cta_link, 500, 'Button link');
+            if ($len_err) {
+                $message = $len_err;
+                $message_type = 'error';
+            }
+        }
+    }
+
+    if (empty($message)) {
+        if ($id) {
+            // Update
                 $stmt = $db->prepare("UPDATE services SET title = ?, description = ?, image_path = ?, alt_text = ?, cta_text = ?, cta_link = ?, display_order = ?, is_active = ? WHERE id = ?");
                 $stmt->execute([$title, $description, $image_path, $alt_text, $cta_text, $cta_link, $display_order, $is_active, $id]);
                 header('Location: services.php?msg=saved');
@@ -139,7 +156,7 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services — Admin</title>
+    <title>Services â€” Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -158,7 +175,7 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
 
             <!-- Form Card (Add/Edit) -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? '📝 Edit Service: ' . htmlspecialchars($edit_item['title']) : '✨ Add New Service'; ?></h2>
+                <h2><?php echo $edit_item ? 'ðŸ“ Edit Service: ' . htmlspecialchars($edit_item['title']) : 'âœ¨ Add New Service'; ?></h2>
                 <form method="POST" action="services.php" enctype="multipart/form-data">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
@@ -198,7 +215,7 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
                     <div class="form-row">
                         <div class="form-group">
                             <label for="cta_text">Button Text</label>
-                            <input type="text" class="form-control" id="cta_text" name="cta_text" value="<?php echo htmlspecialchars($edit_item['cta_text'] ?? 'Learn More →'); ?>">
+                            <input type="text" class="form-control" id="cta_text" name="cta_text" value="<?php echo htmlspecialchars($edit_item['cta_text'] ?? 'Learn More â†’'); ?>">
                         </div>
                         <div class="form-group">
                             <label for="cta_link">Button Link</label>
@@ -254,7 +271,7 @@ $services = $db->query("SELECT * FROM services ORDER BY display_order ASC, creat
                                 </button>
                             </form>
                         </td>
-                        <td><?php echo $svc['display_order']; ?></td>
+                        <td><?php echo htmlspecialchars($svc['display_order']); ?></td>
                         <td>
                             <div class="actions" style="display:flex; gap:8px;">
                                 <a href="services.php?edit=<?php echo $svc['id']; ?>" class="btn btn-outline btn-sm">Edit</a>

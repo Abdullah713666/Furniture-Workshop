@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin FAQ CRUD — Antique Furniture Workshop
+ * Admin FAQ CRUD â€” Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -19,7 +19,7 @@ $csrf_token = $_SESSION['csrf_token'];
 // Delete (POST only with CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
     $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM faqs WHERE id = ?");
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Add / Edit (POST with CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
 
     $id = $_POST['id'] ?? '';
@@ -44,6 +44,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         $message = 'Question and Answer are required.';
         $message_type = 'error';
     } else {
+        $len_err = validate_length($question, 500, 'Question')
+                ?: validate_length($answer, 10000, 'Answer');
+        if ($len_err) {
+            $message = $len_err;
+            $message_type = 'error';
+        }
+    }
+
+    if (empty($message)) {
         if ($id) {
             $stmt = $db->prepare("UPDATE faqs SET question=?, answer=?, display_order=?, is_active=? WHERE id=?");
             $stmt->execute([$question, $answer, $display_order, $is_active, $id]);
@@ -79,7 +88,7 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQs — Admin</title>
+    <title>FAQs â€” Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -98,7 +107,7 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
 
             <!-- Add/Edit Form -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? '📝 Edit FAQ' : '✨ Add New FAQ'; ?></h2>
+                <h2><?php echo $edit_item ? 'ðŸ“ Edit FAQ' : 'âœ¨ Add New FAQ'; ?></h2>
                 <form method="POST" action="faqs.php">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
@@ -155,7 +164,7 @@ $faqs = $db->query("SELECT * FROM faqs ORDER BY display_order ASC")->fetchAll();
                     <?php endif; ?>
                     <?php foreach ($faqs as $faq): ?>
                     <tr>
-                        <td><?php echo $faq['display_order']; ?></td>
+                        <td><?php echo htmlspecialchars($faq['display_order']); ?></td>
                         <td>
                             <strong><?php echo htmlspecialchars($faq['question']); ?></strong>
                             <div style="font-size: 0.8rem; color: #888; margin-top: 4px;">

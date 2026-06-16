@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Settings — Antique Furniture Workshop
+ * Admin Settings â€” Antique Furniture Workshop
  * Change admin username and password
  */
 require_once 'auth.php';
@@ -34,6 +34,12 @@ function afw_base_url(): string {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // CSRF check for ALL POST actions
+    if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
+        http_response_code(403);
+        http_response_code(403); die('Forbidden');
+    }
+
     $action = $_POST['action'] ?? 'account';
 
     if (($action ?? '') === '' || $action === 'account') {
@@ -158,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings — Admin</title>
+    <title>Settings â€” Admin</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .pw-wrapper { position: relative; }
@@ -189,9 +195,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-card">
                 <h2>Email Address <?php if (!empty($admin['email'])): ?>
                     <?php if (intval($admin['email_verified']) === 1): ?>
-                        <span class="badge badge-featured" style="font-size:0.7rem; vertical-align: middle;">✓ Verified</span>
+                        <span class="badge badge-featured" style="font-size:0.7rem; vertical-align: middle;">âœ“ Verified</span>
                     <?php else: ?>
-                        <span class="badge badge-unread" style="font-size:0.7rem; vertical-align: middle;">⚠ Unverified</span>
+                        <span class="badge badge-unread" style="font-size:0.7rem; vertical-align: middle;">âš  Unverified</span>
                     <?php endif; ?>
                 <?php endif; ?></h2>
                 <p style="font-size:0.85rem; color: var(--admin-text-muted);">
@@ -221,6 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="form-card">
                 <h2>Account Settings</h2>
                 <form method="POST" action="settings.php">
+                    <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <div class="form-group">
                         <label for="current_password">Current Password *</label>
                         <div class="pw-wrapper">

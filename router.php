@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 $blocked = ['/config/', '/database.sql', '/install.php'];
@@ -17,6 +17,12 @@ if (in_array($ext, ['sql', 'log', 'md', 'txt'])) {
 
 $file = __DIR__ . $uri;
 if ($uri !== '/' && is_file($file)) {
+    // Serve images with cache headers
+    $ext = pathinfo($uri, PATHINFO_EXTENSION);
+    if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'webp', 'gif', 'svg', 'ico'])) {
+        header('Cache-Control: public, max-age=31536000, immutable');
+        header('Expires: Thu, 31 Dec 2037 23:59:59 GMT');
+    }
     return false;
 }
 

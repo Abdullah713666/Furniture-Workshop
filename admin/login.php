@@ -1,31 +1,24 @@
-<?php
+﻿<?php
 /**
- * Admin Login — Antique Furniture Workshop
+ * Admin Login â€” Antique Furniture Workshop
  */
 require_once __DIR__ . '/auth.php';
 
 // Redirect if already logged in
 if (isLoggedIn()) {
-    header('Location: dashboard.php?token=' . ($_SESSION['admin_tab_token'] ?? ''));
+    header('Location: dashboard.php');
     exit;
 }
 
 $error = '';
-$max_attempts = 5;
-$lockout_duration = 900; // 15 minutes
+$recaptcha_site   = getenv('RECAPTCHA_SITE_KEY')   ?: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+$recaptcha_secret = getenv('RECAPTCHA_SECRET_KEY') ?: '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe';
 
-// reCAPTCHA v2 keys (env-overridable; test keys below work on localhost only)
-$recaptcha_site   = getenv('RECAPTCHA_SITE_KEY_ADMIN')   ?: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
-$recaptcha_secret = getenv('RECAPTCHA_SECRET_KEY_ADMIN') ?: '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe';
+$ip = bf_get_ip();
 
-// Initialize brute force session counters
-if (!isset($_SESSION['admin_failed_attempts'])) {
-    $_SESSION['admin_failed_attempts'] = 0;
-}
-
-// Check lockout
-if (isset($_SESSION['admin_lockout_time']) && time() < $_SESSION['admin_lockout_time']) {
-    $remaining = ceil(($_SESSION['admin_lockout_time'] - time()) / 60);
+// Check IP-based lockout
+if (bf_is_locked($ip)) {
+    $remaining = bf_remaining_minutes($ip);
     $error = "Too many failed login attempts. Please try again in {$remaining} minutes.";
 }
 
@@ -38,7 +31,7 @@ $csrf_token = $_SESSION['csrf_token'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
     // Validate CSRF
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
 
     $username = trim($_POST['username'] ?? '');
@@ -69,13 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
     if (empty($username) || empty($password)) {
         $error = 'Please enter both username and password.';
     } elseif (!$captcha_ok) {
-        $_SESSION['admin_failed_attempts']++;
-        if ($_SESSION['admin_failed_attempts'] >= $max_attempts) {
-            $_SESSION['admin_lockout_time'] = time() + $lockout_duration;
+        $remaining = bf_record_failed($ip);
+        if ($remaining <= 0) {
             $error = 'Too many failed login attempts. You are locked out for 15 minutes.';
         } else {
-            $remaining_attempts = $max_attempts - $_SESSION['admin_failed_attempts'];
-            $error = "CAPTCHA verification failed. {$remaining_attempts} attempts remaining.";
+            $error = "CAPTCHA verification failed. {$remaining} attempts remaining.";
         }
     } else {
         try {
@@ -89,30 +80,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
                 $hasEmail = !empty($user['email']);
                 $verified = isset($user['email_verified']) ? intval($user['email_verified']) === 1 : true;
                 if ($hasEmail && !$verified) {
-                    $error = 'Please verify your email address before signing in. Check your inbox for the verification link, or use “Forgot password” to receive a new email.';
+                    $error = 'Please verify your email address before signing in. Check your inbox for the verification link, or use â€œForgot passwordâ€ to receive a new email.';
                 } else {
-                    // Reset failed attempts on success
-                    $_SESSION['admin_failed_attempts'] = 0;
-                    unset($_SESSION['admin_lockout_time']);
+                    bf_reset($ip);
 
                     // Prevent Session Fixation by regenerating Session ID on login
                     session_regenerate_id(true);
 
                     $_SESSION['admin_id'] = $user['id'];
                     $_SESSION['admin_user'] = $user['username'];
-                    $_SESSION['admin_tab_token'] = bin2hex(random_bytes(16));
                     $_SESSION['last_activity'] = time();
-                    header('Location: dashboard.php?token=' . $_SESSION['admin_tab_token']);
+                    header('Location: dashboard.php');
                     exit;
                 }
             } else {
-                $_SESSION['admin_failed_attempts']++;
-                if ($_SESSION['admin_failed_attempts'] >= $max_attempts) {
-                    $_SESSION['admin_lockout_time'] = time() + $lockout_duration;
+                $remaining = bf_record_failed($ip);
+                if ($remaining <= 0) {
                     $error = 'Too many failed login attempts. You are locked out for 15 minutes.';
                 } else {
-                    $remaining_attempts = $max_attempts - $_SESSION['admin_failed_attempts'];
-                    $error = "Invalid username or password. {$remaining_attempts} attempts remaining.";
+                    $error = "Invalid username or password. {$remaining} attempts remaining.";
                 }
             }
         } catch (Exception $e) {
@@ -126,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login — Antique Workshop</title>
+    <title>Admin Login â€” Antique Workshop</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .pw-wrapper { position: relative; }
@@ -143,8 +129,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
 <body>
     <div class="login-container">
         <div class="login-card">
-            <h1>🔐 Admin Panel</h1>
-            <p>Antique Furniture Workshop — Content Management</p>
+            <h1>ðŸ” Admin Panel</h1>
+            <p>Antique Furniture Workshop â€” Content Management</p>
 
             <?php if ($error): ?>
             <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
@@ -170,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
                     </div>
                 </div>
 
-                <?php $is_locked = isset($_SESSION['admin_lockout_time']) && time() < $_SESSION['admin_lockout_time']; ?>
+                <?php $is_locked = bf_is_locked($ip); ?>
                 <?php if (!$is_locked): ?>
                 <div class="form-group" style="display:flex; justify-content:center; margin: 16px 0;">
                     <div class="g-recaptcha" data-sitekey="<?php echo htmlspecialchars($recaptcha_site); ?>"></div>
@@ -184,7 +170,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($error)) {
                 <a href="forgot_password.php">Forgot password?</a>
             </p>
             <p style="text-align: center; margin-top: 8px; font-size: 0.8rem;">
-                <a href="../index.php">← Back to website</a>
+                <a href="../index.php">â† Back to website</a>
             </p>
         </div>
     </div>

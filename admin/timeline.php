@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Timeline CRUD — Antique Furniture Workshop
+ * Admin Timeline CRUD â€” Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -19,7 +19,7 @@ $csrf_token = $_SESSION['csrf_token'];
 // Delete (POST with CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
     $id = intval($_POST['id'] ?? 0);
     $stmt = $db->prepare("DELETE FROM timeline_events WHERE id = ?");
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Add / Edit (POST with CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
 
     $id = $_POST['id'] ?? '';
@@ -44,6 +44,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         $message = 'All fields are required.';
         $message_type = 'error';
     } else {
+        $len_err = validate_length($year, 20, 'Year')
+                ?: validate_length($title, 200, 'Title')
+                ?: validate_length($description, 2000, 'Description');
+        if ($len_err) {
+            $message = $len_err;
+            $message_type = 'error';
+        }
+    }
+
+    if (empty($message)) {
         if ($id) {
             $stmt = $db->prepare("UPDATE timeline_events SET year=?, title=?, description=?, display_order=? WHERE id=?");
             $stmt->execute([$year, $title, $description, $display_order, $id]);
@@ -79,7 +89,7 @@ $events = $db->query("SELECT * FROM timeline_events ORDER BY display_order ASC")
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Timeline — Admin</title>
+    <title>Timeline â€” Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -98,7 +108,7 @@ $events = $db->query("SELECT * FROM timeline_events ORDER BY display_order ASC")
 
             <!-- Add/Edit Form -->
             <div class="form-card">
-                <h2><?php echo $edit_item ? '📝 Edit Event' : '✨ Add New Event'; ?></h2>
+                <h2><?php echo $edit_item ? 'ðŸ“ Edit Event' : 'âœ¨ Add New Event'; ?></h2>
                 <form method="POST" action="timeline.php">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <?php if ($edit_item): ?>
@@ -152,7 +162,7 @@ $events = $db->query("SELECT * FROM timeline_events ORDER BY display_order ASC")
                         <td><strong><?php echo htmlspecialchars($event['year']); ?></strong></td>
                         <td><?php echo htmlspecialchars($event['title']); ?></td>
                         <td><?php echo htmlspecialchars(substr($event['description'], 0, 60)); ?>...</td>
-                        <td><?php echo $event['display_order']; ?></td>
+                        <td><?php echo htmlspecialchars($event['display_order']); ?></td>
                         <td>
                             <div class="actions" style="display:flex; gap:8px;">
                                 <a href="timeline.php?edit=<?php echo $event['id']; ?>" class="btn btn-outline btn-sm">Edit</a>

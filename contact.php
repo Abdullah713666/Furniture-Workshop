@@ -1,19 +1,17 @@
-<?php
+﻿<?php
 /**
- * Contact Page & Form Handler — Antique Furniture Workshop
+ * Contact Page & Form Handler â€” Antique Furniture Workshop
  * 
- * GET  → Displays the contact page with form + info
- * POST → Validates, sanitizes, logs the form submission, returns JSON/redirect
+ * GET  â†’ Displays the contact page with form + info
+ * POST â†’ Validates, sanitizes, logs the form submission, returns JSON/redirect
  */
 require_once 'config/init.php';
 
-// reCAPTCHA keys — read from environment, fall back to Google's test keys (localhost only)
+// reCAPTCHA keys â€” read from environment, fall back to Google's test keys (localhost only)
 // Get your own keys at: https://www.google.com/recaptcha/admin
 // Set RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY in Railway env vars / .env for production.
 define('RECAPTCHA_SITE_KEY',   getenv('RECAPTCHA_SITE_KEY')   ?: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
 define('RECAPTCHA_SECRET_KEY', getenv('RECAPTCHA_SECRET_KEY') ?: '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
-define('RECAPTCHA_SITE_KEY_ADMIN',   getenv('RECAPTCHA_SITE_KEY_ADMIN')   ?: RECAPTCHA_SITE_KEY);
-define('RECAPTCHA_SECRET_KEY_ADMIN', getenv('RECAPTCHA_SECRET_KEY_ADMIN') ?: RECAPTCHA_SECRET_KEY);
 define('MAX_WORDS', 250);
 
 // ============================================================
@@ -28,13 +26,13 @@ $csrf_token = $_SESSION['csrf_token'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate CSRF
     if (($_POST['csrf_token'] ?? '') !== $csrf_token) {
-        die('Invalid CSRF token.');
+        http_response_code(403); die('Forbidden');
     }
 
 
-    // --- Helper: sanitize a string input ---
+    // --- Helper: sanitize a string input (trim + strip, escape on output only) ---
     function sanitize_input($data) {
-        return htmlspecialchars(trim($data), ENT_QUOTES, 'UTF-8');
+        return trim($data);
     }
 
     // --- Helper: count words ---
@@ -106,35 +104,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!($verify_json['success'] ?? false)) {
                 $errors[] = 'reCAPTCHA verification failed. Please try again.';
             }
+        } else {
+            $errors[] = 'reCAPTCHA verification could not be completed. Please try again later.';
         }
-        // If verification request fails (e.g. no internet on localhost), silently pass
     }
 
     // --- Build response ---
     if (!empty($errors)) {
         $response = ['success' => false, 'message' => implode(' ', $errors)];
     } else {
-        // Log to file
-        $log_entry  = "=== New Inquiry ===\n";
-        $log_entry .= "Date: " . date('Y-m-d H:i:s') . "\n";
-        $log_entry .= "Name: $fullname\n";
-        $log_entry .= "Email: $email\n";
-        $log_entry .= "Phone: $phone\n";
-        $log_entry .= "Service: $service\n";
-        $log_entry .= "Details: $details\n";
-        $log_entry .= "IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . "\n";
-        $log_entry .= "===================\n\n";
-
-        $log_file = __DIR__ . '/messages.log';
-        file_put_contents($log_file, $log_entry, FILE_APPEND | LOCK_EX);
-
-        // Also save to database if available
+        // Save to database
         try {
             $db = getDB();
             $stmt = $db->prepare("INSERT INTO contact_submissions (name, email, phone, service_interest, message) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$fullname, $email, $phone, $service, $details]);
         } catch (Exception $e) {
-            // Silently continue — log file is the fallback
+            error_log('Contact form DB error: ' . $e->getMessage());
         }
 
         $response = [
@@ -164,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ============================================================
 // HANDLE GET (display the contact page)
 // ============================================================
-$page_title = 'Contact — Antique Furniture Workshop';
+$page_title = 'Contact â€” Antique Furniture Workshop';
 $page_description = 'Get in touch with our antique furniture restoration workshop. Inquire about restoration, custom commissions, or schedule a consultation.';
 $active_page = 'contact';
 
@@ -261,7 +246,7 @@ require_once 'includes/header.php';
         <!-- Contact Info -->
         <div class="contact-info fade-up">
             <h2>
-                <span aria-hidden="true" style="font-size:1.2rem;">🏛️</span>
+                <span aria-hidden="true" style="font-size:1.2rem;">ðŸ›ï¸</span>
                 Visit the Workshop
             </h2>
 
