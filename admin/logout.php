@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Logout — Antique Furniture Workshop
+ * Admin Logout â€” Antique Furniture Workshop
  */
 require_once __DIR__ . '/../config/init.php';
 

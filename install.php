@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Antique Furniture Workshop — Database Installer
+ * Antique Furniture Workshop â€” Database Installer
  * 
  * Run this ONCE to set up the database, tables, and seed data.
  * Visit: http://localhost/antique-furniture-workshop/install.php
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Install — Antique Furniture Workshop</title>
+    <title>Install â€” Antique Furniture Workshop</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -171,13 +171,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         }
         .checklist { list-style: none; margin: 16px 0; }
         .checklist li { padding: 6px 0; font-size: 0.875rem; }
-        .checklist li::before { content: '✓ '; color: #27ae60; font-weight: bold; }
+        .checklist li::before { content: 'âœ“ '; color: #27ae60; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="installer">
         <?php if ($step === 'done'): ?>
-            <h1>✅ Setup Complete!</h1>
+            <h1>âœ… Setup Complete!</h1>
             
             <?php if ($success): ?>
             <div class="alert alert-success"><?php echo $success; ?></div>
@@ -191,16 +191,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             </ul>
             
             <div class="links">
-                <a href="index.php">🌐 View Website</a>
-                <a href="admin/login.php">🔐 Admin Panel</a>
+                <a href="index.php">ðŸŒ View Website</a>
+                <a href="admin/login.php">ðŸ” Admin Panel</a>
             </div>
             
             <div class="note">
-                ⚠️ <strong>Security:</strong> Please delete <code>install.php</code> and <code>database.sql</code> from your server after verifying everything works.
+                âš ï¸ <strong>Security:</strong> Please delete <code>install.php</code> and <code>database.sql</code> from your server after verifying everything works.
             </div>
             
         <?php elseif ($step === 'blocked'): ?>
-            <h1>🔒 Setup Blocked</h1>
+            <h1>ðŸ”’ Setup Blocked</h1>
             
             <div class="alert alert-error" style="margin-top: 16px; line-height: 1.5;">
                 <?php echo $error; ?>
@@ -209,11 +209,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
             <p style="margin-top: 16px; color: #8a7e6e;">For security, you cannot re-initialize the database because the tables already exist. If you actually wish to re-run the setup, please drop the existing database manually in phpMyAdmin first.</p>
             
             <div class="links" style="margin-top: 24px;">
-                <a href="index.php">🌐 Go to Website</a>
-                <a href="admin/login.php">🔐 Admin Panel</a>
+                <a href="index.php">ðŸŒ Go to Website</a>
+                <a href="admin/login.php">ðŸ” Admin Panel</a>
             </div>
         <?php else: ?>
-            <h1>🛠️ Database Setup</h1>
+            <h1>ðŸ› ï¸ Database Setup</h1>
             <p>This will create the MySQL database and populate it with your existing website content. Make sure MySQL is running.</p>
 
             
@@ -249,12 +249,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                     <input type="text" name="admin_pass" value="admin123" placeholder="Choose a password">
                 </div>
                 
-                <button type="submit" class="btn">🚀 Install Database</button>
+                <button type="submit" class="btn">ðŸš€ Install Database</button>
             </form>
             
             <div class="note">
                 <?php if (getenv('MYSQLHOST')): ?>
-                    Railway detected — credentials auto-filled from your MySQL service.
+                    Railway detected â€” credentials auto-filled from your MySQL service.
                 <?php else: ?>
                     Default XAMPP settings: host = <code>localhost</code>, user = <code>root</code>, password = <em>empty</em>
                 <?php endif; ?>

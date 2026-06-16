@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Admin Sidebar Include
  * Shared sidebar navigation for all admin pages

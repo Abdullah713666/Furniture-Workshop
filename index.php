@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
- * Homepage — Antique Furniture Workshop
+ * Homepage â€” Antique Furniture Workshop
  * Dynamic version: fetches featured pieces from database
  */
 require_once 'config/database.php';
 
-$page_title = 'Antique Furniture Workshop — The Art of Restoration';
+$page_title = 'Antique Furniture Workshop â€” The Art of Restoration';
 $page_description = 'Expert antique furniture restoration, custom commissions, and conservation services. Preserving the past for the future since 1985.';
 $active_page = 'home';
 
@@ -21,10 +21,10 @@ require_once 'includes/header.php';
 
     <!-- ==================== HERO SECTION ==================== -->
     <section class="hero" aria-label="Hero">
-        <div class="hero-bg" role="img" aria-label="Dark wood texture background" style="background-image: url('images/hero-bg.jpg');"></div>
+        <div class="hero-bg" aria-hidden="true"></div>
         <div class="hero-particles" aria-hidden="true"></div>
         
-        <div class="hero-split" style="z-index: 2;">
+        <div class="hero-split" style="z-index: 4;">
             <!-- Left: Text Content -->
             <div class="hero-content fade-up">
                 <span class="hero-tag">Est. 1985</span>
@@ -74,8 +74,8 @@ require_once 'includes/header.php';
         </div>
 
         <div class="before-after-container scale-reveal">
-            <img src="images/after-restoration.png" alt="Furniture after restoration" class="ba-before">
-            <img src="images/before-restoration.png" alt="Furniture before restoration" class="ba-after">
+            <img src="images/after-restoration.jpg" alt="Furniture after restoration" class="ba-before" loading="lazy">
+            <img src="images/before-restoration.jpg" alt="Furniture before restoration" class="ba-after" loading="lazy">
             <div class="ba-slider-line"></div>
             <div class="ba-slider-handle">
                 <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/><polyline points="15 18 9 12 15 6"/></svg>
@@ -120,7 +120,7 @@ require_once 'includes/header.php';
     <section class="process-section" aria-label="Our restoration process">
         <div class="section-header text-center fade-up" style="padding: 0 20px;">
             <h2 style="text-align:center;">Our <span class="accent-text">Process</span></h2>
-            <p class="section-subtitle" style="margin: 10px auto 0; text-align:center;">From assessment to delivery — every step handled with care.</p>
+            <p class="section-subtitle" style="margin: 10px auto 0; text-align:center;">From assessment to delivery â€” every step handled with care.</p>
         </div>
 
         <div class="process-grid" style="margin-top: 30px;">
@@ -248,7 +248,7 @@ require_once 'includes/header.php';
             <button class="chatbot-close" aria-label="Close chat">&times;</button>
         </div>
         <div class="chatbot-messages">
-            <div class="chat-msg bot">Hello! 👋 I'm the Workshop Assistant. Ask me about our restoration services, pricing, hours, or anything else!</div>
+            <div class="chat-msg bot">Hello! ðŸ‘‹ I'm the Workshop Assistant. Ask me about our restoration services, pricing, hours, or anything else!</div>
         </div>
         <div class="chat-suggestions">
             <button class="chat-suggestion-btn">Restoration services</button>

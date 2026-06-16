@@ -35,9 +35,9 @@ INSERT INTO `gallery_items` (`title`, `description`, `category`, `image_path`, `
 ('Victorian Armchair', 'c. 1870 — Full French polish restoration', 'restoration', 'images/featured-victorian-armchair.jpg', 'Restored Victorian armchair', 1, 'Restored', 1),
 ('Heritage Oak Table', 'Bespoke 12-seat dining table in English oak', 'handcrafted', 'images/featured-oak-table.jpg', 'Handcrafted oak dining table', 1, 'Handcrafted', 2),
 ('Gilded Rococo Mirror', '18th-century gold leaf frame restoration', 'restoration', 'images/featured-gilded-mirror.jpg', 'Gilded antique mirror frame', 1, 'Restored', 3),
-('Chesterfield Sofa', 'Hand-tufted leather sofa with brass nail-head trim', 'restoration', 'images/gallery-chesterfield-sofa.png', 'Luxurious Chesterfield sofa', 1, 'Restored', 4),
-('Regency Bookcase', 'Mahogany bookcase with glass-fronted doors', 'handcrafted', 'images/gallery-regency-bookcase.png', 'Elegant Regency bookcase', 1, 'Handcrafted', 5),
-('Four-Poster Bed', 'Mahogany bed frame with carved acanthus posts', 'baroque', 'images/gallery-four-poster-bed.png', 'Antique four-poster bed', 1, 'Baroque', 6),
+('Chesterfield Sofa', 'Hand-tufted leather sofa with brass nail-head trim', 'restoration', 'images/gallery-chesterfield-sofa.jpg', 'Luxurious Chesterfield sofa', 1, 'Restored', 4),
+('Regency Bookcase', 'Mahogany bookcase with glass-fronted doors', 'handcrafted', 'images/gallery-regency-bookcase.jpg', 'Elegant Regency bookcase', 1, 'Handcrafted', 5),
+('Four-Poster Bed', 'Mahogany bed frame with carved acanthus posts', 'baroque', 'images/gallery-four-poster-bed.jpg', 'Antique four-poster bed', 1, 'Baroque', 6),
 ('Antique Armoire', 'Restored 19th-century wardrobe in solid oak', 'restoration', 'images/gallery-antique-armoire.jpg', 'Antique wooden armoire', 0, '', 7),
 ('Grandfather Clock', 'Fully serviced longcase clock, c. 1890', 'restoration', 'images/gallery-grandfather-clock.jpg', 'Grandfather clock', 0, '', 8),
 ('Oak Table Surface', 'Detail of hand-planed English oak tabletop', 'handcrafted', 'images/gallery-oak-surface.jpg', 'Oak table surface detail', 0, '', 9),
@@ -46,9 +46,9 @@ INSERT INTO `gallery_items` (`title`, `description`, `category`, `image_path`, `
 ('Antique Dresser', 'Victorian-era dresser with original mirror', 'restoration', 'images/gallery-antique-dresser.jpg', 'Antique dresser with mirror', 0, '', 12),
 ('Baroque Writing Desk', 'Ornate desk with gilded drawer pulls', 'baroque', 'images/gallery-baroque-desk.jpg', 'Baroque writing desk', 0, '', 13),
 ('Console Table', 'Slim entryway table in reclaimed timber', 'handcrafted', 'images/gallery-console-table.jpg', 'Handcrafted console table', 0, '', 14),
-('Carved Sideboard', 'Walnut sideboard with intricate scrollwork', 'handcrafted', 'images/gallery-carved-sideboard.png', 'Carved antique sideboard', 0, '', 15),
-('Art Deco Vanity', 'Lacquered vanity with gold inlay and mirror', 'restoration', 'images/gallery-art-deco-vanity.png', 'Art Deco vanity desk', 0, '', 16),
-('Antique Rocking Chair', 'Cherry wood rocker with turned spindles', 'handcrafted', 'images/gallery-rocking-chair.png', 'Antique rocking chair', 0, '', 17);
+('Carved Sideboard', 'Walnut sideboard with intricate scrollwork', 'handcrafted', 'images/gallery-carved-sideboard.jpg', 'Carved antique sideboard', 0, '', 15),
+('Art Deco Vanity', 'Lacquered vanity with gold inlay and mirror', 'restoration', 'images/gallery-art-deco-vanity.jpg', 'Art Deco vanity desk', 0, '', 16),
+('Antique Rocking Chair', 'Cherry wood rocker with turned spindles', 'handcrafted', 'images/gallery-rocking-chair.jpg', 'Antique rocking chair', 0, '', 17);
 
 -- ============================================================
 -- 2. Services
@@ -280,3 +280,6 @@ ALTER TABLE `gallery_items` DROP COLUMN `sku`;
 
 -- Tighten gallery_items.status to portfolio-relevant values
 ALTER TABLE `gallery_items` MODIFY COLUMN `status` VARCHAR(20) NOT NULL DEFAULT 'on_display';
+
+-- Update image paths: .png → .jpg (images were converted to save bandwidth)
+UPDATE `gallery_items` SET `image_path` = REPLACE(`image_path`, '.png', '.jpg') WHERE `image_path` LIKE '%.png';

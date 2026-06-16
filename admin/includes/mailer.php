@@ -1,14 +1,14 @@
-<?php
+﻿<?php
 /**
- * Resend Mailer — Antique Furniture Workshop
+ * Resend Mailer â€” Antique Furniture Workshop
  *
  * Single-file Resend API wrapper. No Composer required.
  * Uses curl when available, falls back to file_get_contents stream context.
  *
  * Required env vars:
- *   RESEND_API_KEY    — your Resend API key (re_…)
- *   MAIL_FROM         — sender address, e.g. hello@antiqueworkshop.com
- *   MAIL_FROM_NAME    — display name, e.g. "Antique Workshop"
+ *   RESEND_API_KEY    â€” your Resend API key (re_â€¦)
+ *   MAIL_FROM         â€” sender address, e.g. hello@antiqueworkshop.com
+ *   MAIL_FROM_NAME    â€” display name, e.g. "Antique Workshop"
  *
  * Set on Railway via: railway variables set RESEND_API_KEY=re_xxx MAIL_FROM=...
  */

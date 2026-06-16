@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Reports Dashboard — Antique Furniture Workshop
+ * Admin Reports Dashboard â€” Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -43,7 +43,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reports — Admin</title>
+    <title>Reports â€” Admin</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>

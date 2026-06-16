@@ -1,0 +1,312 @@
+{
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\about.php": {
+    "mtime": 1772728124.1838663,
+    "ast_hash": "beea2c915bb213b000a4042478817940",
+    "semantic_hash": "beea2c915bb213b000a4042478817940"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\auth.php": {
+    "mtime": 1780595794.7076168,
+    "ast_hash": "eaf43f72b931b0b3274d8ffbc36efc77",
+    "semantic_hash": "eaf43f72b931b0b3274d8ffbc36efc77"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\categories.php": {
+    "mtime": 1780587178.7074175,
+    "ast_hash": "ffe101a13f612735cc83bb243a01b4cf",
+    "semantic_hash": "ffe101a13f612735cc83bb243a01b4cf"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\dashboard.php": {
+    "mtime": 1780587145.7056746,
+    "ast_hash": "b072d5686d1ec1b8277e5415b6ea6f4e",
+    "semantic_hash": "b072d5686d1ec1b8277e5415b6ea6f4e"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\faqs.php": {
+    "mtime": 1780587179.7318509,
+    "ast_hash": "c49c8f1e4f307baefda42424ec06dea3",
+    "semantic_hash": "c49c8f1e4f307baefda42424ec06dea3"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\gallery.php": {
+    "mtime": 1780587180.4867177,
+    "ast_hash": "d340a3de6031026c1ada1616b2299098",
+    "semantic_hash": "d340a3de6031026c1ada1616b2299098"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\includes\\mailer.php": {
+    "mtime": 1780587234.0207253,
+    "ast_hash": "3b5edd7decd9f92c264fb45cb499a6d6",
+    "semantic_hash": "3b5edd7decd9f92c264fb45cb499a6d6"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\includes\\particles.php": {
+    "mtime": 1780587113.5938275,
+    "ast_hash": "805441487a3fd8b19f0972af1134678b",
+    "semantic_hash": "805441487a3fd8b19f0972af1134678b"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\includes\\sidebar.php": {
+    "mtime": 1780586800.7258132,
+    "ast_hash": "ae54141445f424e3632e6c94ab374fd6",
+    "semantic_hash": "ae54141445f424e3632e6c94ab374fd6"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\index.php": {
+    "mtime": 1780587146.6197097,
+    "ast_hash": "c24fc1c1907988ab2f6ffe09dce00c14",
+    "semantic_hash": "c24fc1c1907988ab2f6ffe09dce00c14"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\inventory.php": {
+    "mtime": 1780587181.233035,
+    "ast_hash": "12d2a1080c7038ace77cbdd2f69d946c",
+    "semantic_hash": "12d2a1080c7038ace77cbdd2f69d946c"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\login.php": {
+    "mtime": 1780587592.5802665,
+    "ast_hash": "dc37fc64a7a90521d46d8154cc21628b",
+    "semantic_hash": "dc37fc64a7a90521d46d8154cc21628b"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\logout.php": {
+    "mtime": 1780423070.057102,
+    "ast_hash": "ddc551277772d6fe885192b39a77fefa",
+    "semantic_hash": "ddc551277772d6fe885192b39a77fefa"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\messages.php": {
+    "mtime": 1780642431.2012107,
+    "ast_hash": "168f61cda802a1622c36a739a0651ef5",
+    "semantic_hash": "168f61cda802a1622c36a739a0651ef5"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\reports.php": {
+    "mtime": 1780587183.1050313,
+    "ast_hash": "fab3fce40c058669b16f41bc7dbe4ffa",
+    "semantic_hash": "fab3fce40c058669b16f41bc7dbe4ffa"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\services.php": {
+    "mtime": 1780587184.19915,
+    "ast_hash": "ad1664b8f9aefde7f645c35e7dc9bc45",
+    "semantic_hash": "ad1664b8f9aefde7f645c35e7dc9bc45"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\settings.php": {
+    "mtime": 1780595805.4020276,
+    "ast_hash": "20224525d304abfac76cf5b57e448b2b",
+    "semantic_hash": "20224525d304abfac76cf5b57e448b2b"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\timeline.php": {
+    "mtime": 1780587186.3970666,
+    "ast_hash": "1b838c5fe6f88e2100f702a626fb7602",
+    "semantic_hash": "1b838c5fe6f88e2100f702a626fb7602"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\admin\\verify_email.php": {
+    "mtime": 1780595815.9830787,
+    "ast_hash": "365916b943a7474d0215767b0748a80c",
+    "semantic_hash": "365916b943a7474d0215767b0748a80c"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\config\\database.php": {
+    "mtime": 1780464639.314165,
+    "ast_hash": "d24653011f06107253aa4f03ca63fb48",
+    "semantic_hash": "d24653011f06107253aa4f03ca63fb48"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\config\\init.php": {
+    "mtime": 1780423036.736895,
+    "ast_hash": "f3f56b663a2cf6826a8f52b72e9741cd",
+    "semantic_hash": "f3f56b663a2cf6826a8f52b72e9741cd"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\contact.php": {
+    "mtime": 1780586630.4206002,
+    "ast_hash": "17e0ad803c7c01420e621f75f04341da",
+    "semantic_hash": "17e0ad803c7c01420e621f75f04341da"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\database.sql": {
+    "mtime": 1780589121.4363897,
+    "ast_hash": "1e883b5c4458dbc13ef5cb04e9051830",
+    "semantic_hash": "1e883b5c4458dbc13ef5cb04e9051830"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\faq.php": {
+    "mtime": 1780267546.33421,
+    "ast_hash": "ac3438f448e89d85e814da87c7f346c3",
+    "semantic_hash": "ac3438f448e89d85e814da87c7f346c3"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\gallery.php": {
+    "mtime": 1780423460.8337317,
+    "ast_hash": "cdb89d10d63dbc6c4f8c8188f6146a51",
+    "semantic_hash": "cdb89d10d63dbc6c4f8c8188f6146a51"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\includes\\footer.php": {
+    "mtime": 1780645411.3093033,
+    "ast_hash": "71e9783533b9bb1bd063b5455d50c511",
+    "semantic_hash": "71e9783533b9bb1bd063b5455d50c511"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\includes\\header.php": {
+    "mtime": 1780645408.2937577,
+    "ast_hash": "9263ac9adb595d2bad3786ddb0ba8f2c",
+    "semantic_hash": "9263ac9adb595d2bad3786ddb0ba8f2c"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\index.php": {
+    "mtime": 1780422841.8831608,
+    "ast_hash": "e7a643ad877be82752f4e3a6bf39136e",
+    "semantic_hash": "e7a643ad877be82752f4e3a6bf39136e"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\js\\animations-gsap.js": {
+    "mtime": 1780272813.5749638,
+    "ast_hash": "780cf32bd8cb04dde8f6e96fdf564796",
+    "semantic_hash": "780cf32bd8cb04dde8f6e96fdf564796"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\js\\nav-gsap.js": {
+    "mtime": 1780268590.0348766,
+    "ast_hash": "c4b66b82902264b03cf36345e774d391",
+    "semantic_hash": "c4b66b82902264b03cf36345e774d391"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\js\\particles.js": {
+    "mtime": 1780267658.546913,
+    "ast_hash": "17596b704ac3c00902127f3ad6f61c85",
+    "semantic_hash": "17596b704ac3c00902127f3ad6f61c85"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\js\\script.js": {
+    "mtime": 1780586593.5446546,
+    "ast_hash": "febf6c1dfc699a10d41b49913e4781e3",
+    "semantic_hash": "febf6c1dfc699a10d41b49913e4781e3"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\router.php": {
+    "mtime": 1780467077.23212,
+    "ast_hash": "c8e7f151d708e8397ac59873c095d098",
+    "semantic_hash": "c8e7f151d708e8397ac59873c095d098"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\services.php": {
+    "mtime": 1780273471.4452915,
+    "ast_hash": "4e6d17d286852a675a0491cc7f28ab2b",
+    "semantic_hash": "4e6d17d286852a675a0491cc7f28ab2b"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\setup.php": {
+    "mtime": 1780586752.146359,
+    "ast_hash": "82fa1bf49e56e14180db77d2dca749f0",
+    "semantic_hash": "82fa1bf49e56e14180db77d2dca749f0"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\.github\\workflows\\opencode.yml": {
+    "mtime": 1780458658.570563,
+    "ast_hash": "2e246b62deda4f564c80092b1d6d6b93",
+    "semantic_hash": "2e246b62deda4f564c80092b1d6d6b93"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\README.txt": {
+    "mtime": 1780271702.0445487,
+    "ast_hash": "0db13a91e32a0dcae20fa206bc9ebb6d",
+    "semantic_hash": "0db13a91e32a0dcae20fa206bc9ebb6d"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\about-craftsman.jpg": {
+    "mtime": 1773506594.5622594,
+    "ast_hash": "14b73e60cbfa06e2a0685a9cdf5afd5e",
+    "semantic_hash": "14b73e60cbfa06e2a0685a9cdf5afd5e"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\after-restoration.png": {
+    "mtime": 1778397389.74305,
+    "ast_hash": "accd204cbe5d7d7c06aa04d0d8a978a7",
+    "semantic_hash": "accd204cbe5d7d7c06aa04d0d8a978a7"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\before-restoration.png": {
+    "mtime": 1778397001.690089,
+    "ast_hash": "b580502be9f33e1021a4decc366fcfe7",
+    "semantic_hash": "b580502be9f33e1021a4decc366fcfe7"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\favicon.svg": {
+    "mtime": 1776586700.9818223,
+    "ast_hash": "a9fbab117427095567d0ff2d6c556a5b",
+    "semantic_hash": "a9fbab117427095567d0ff2d6c556a5b"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\featured-gilded-mirror.jpg": {
+    "mtime": 1773499853.5462034,
+    "ast_hash": "91230657c931b1986cb73f6f7b1b7a02",
+    "semantic_hash": "91230657c931b1986cb73f6f7b1b7a02"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\featured-oak-table.jpg": {
+    "mtime": 1773499818.809969,
+    "ast_hash": "0e7d36ad8338d8a2a084645aa6b8a97c",
+    "semantic_hash": "0e7d36ad8338d8a2a084645aa6b8a97c"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\featured-victorian-armchair.jpg": {
+    "mtime": 1773499794.1031132,
+    "ast_hash": "f92ea8c28c19e6fd7f9a169e1ba1576b",
+    "semantic_hash": "f92ea8c28c19e6fd7f9a169e1ba1576b"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-antique-armoire.jpg": {
+    "mtime": 1773499896.9844608,
+    "ast_hash": "28fc2a034a62d610e92196cedf40d089",
+    "semantic_hash": "28fc2a034a62d610e92196cedf40d089"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-antique-dresser.jpg": {
+    "mtime": 1773506614.2763777,
+    "ast_hash": "65086973ac55a775dc2f6619678cb109",
+    "semantic_hash": "65086973ac55a775dc2f6619678cb109"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-art-deco-vanity.png": {
+    "mtime": 1773559950.3273976,
+    "ast_hash": "d89480fcfa59e968d8fcda2d9694f090",
+    "semantic_hash": "d89480fcfa59e968d8fcda2d9694f090"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-baroque-armchair.jpg": {
+    "mtime": 1773506585.9388814,
+    "ast_hash": "5e3742ee5e73b65460bbb86bbe8eee4d",
+    "semantic_hash": "5e3742ee5e73b65460bbb86bbe8eee4d"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-baroque-desk.jpg": {
+    "mtime": 1773506610.9825037,
+    "ast_hash": "3abe94d23867df4e74369eff19bb7c39",
+    "semantic_hash": "3abe94d23867df4e74369eff19bb7c39"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-carved-sideboard.png": {
+    "mtime": 1773559891.0431054,
+    "ast_hash": "659c82d5dbeab56a7bed460416df706e",
+    "semantic_hash": "659c82d5dbeab56a7bed460416df706e"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-chesterfield-sofa.png": {
+    "mtime": 1773559860.2712102,
+    "ast_hash": "5425d6249d7ed853569c7cca014d7f34",
+    "semantic_hash": "5425d6249d7ed853569c7cca014d7f34"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-console-table.jpg": {
+    "mtime": 1773506623.806056,
+    "ast_hash": "8471b16391a9a7ba10d9018d97d8cc51",
+    "semantic_hash": "8471b16391a9a7ba10d9018d97d8cc51"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-four-poster-bed.png": {
+    "mtime": 1773559985.039073,
+    "ast_hash": "cfc3526db29bc5ace0adcdee06f428cd",
+    "semantic_hash": "cfc3526db29bc5ace0adcdee06f428cd"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-grandfather-clock.jpg": {
+    "mtime": 1773506589.1941373,
+    "ast_hash": "34a16c4833758aedea467062fa39d9e6",
+    "semantic_hash": "34a16c4833758aedea467062fa39d9e6"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-handcrafted-chair.jpg": {
+    "mtime": 1773506581.358142,
+    "ast_hash": "4f675bfa14d53674d6f2ffc323d4a588",
+    "semantic_hash": "4f675bfa14d53674d6f2ffc323d4a588"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-oak-surface.jpg": {
+    "mtime": 1773506619.478958,
+    "ast_hash": "f0dd155e2be1b0c658a4ed12da07eeb6",
+    "semantic_hash": "f0dd155e2be1b0c658a4ed12da07eeb6"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-regency-bookcase.png": {
+    "mtime": 1773559874.415556,
+    "ast_hash": "334cce83e598a6e57a8a1aee5448effb",
+    "semantic_hash": "334cce83e598a6e57a8a1aee5448effb"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\gallery-rocking-chair.png": {
+    "mtime": 1773559964.6333487,
+    "ast_hash": "efa8f592033adc192b0cb4cf0b9c6053",
+    "semantic_hash": "efa8f592033adc192b0cb4cf0b9c6053"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\hero-bg.jpg": {
+    "mtime": 1773499718.5402825,
+    "ast_hash": "cc402a9dab86ee5701fa4e6e27f79402",
+    "semantic_hash": "cc402a9dab86ee5701fa4e6e27f79402"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\service-consultation.jpg": {
+    "mtime": 1773506628.873645,
+    "ast_hash": "a85e90297d5fa091f20a5e02f676c963",
+    "semantic_hash": "a85e90297d5fa091f20a5e02f676c963"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\service-custom.jpg": {
+    "mtime": 1773506637.8601775,
+    "ast_hash": "69afcc2bd20fad5bb8ae07dead506932",
+    "semantic_hash": "69afcc2bd20fad5bb8ae07dead506932"
+  },
+  "E:\\XAMPP\\htdocs\\antique-furniture-workshop\\images\\service-restoration.jpg": {
+    "mtime": 1773506632.8532226,
+    "ast_hash": "39bb03311888f105337864894067514b",
+    "semantic_hash": "39bb03311888f105337864894067514b"
+  }
+}

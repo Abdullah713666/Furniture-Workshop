@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Shared Footer — Antique Furniture Workshop
+ * Shared Footer â€” Antique Furniture Workshop
  * 
  * Include this at the bottom of every public page.
  * Uses $active_page variable set before including header.php
@@ -86,14 +86,14 @@ $active_page = $active_page ?? 'home';
         </div>
         <div class="cookie-consent-inner">
             <div class="cookie-consent-content">
-                <div class="cookie-icon">🍪</div>
+                <div class="cookie-icon">ðŸª</div>
                 <div class="cookie-text">
                     <h4>We Value Your Privacy</h4>
                     <p>We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies. <a href="contact.php">Learn more</a></p>
                 </div>
             </div>
             <div class="cookie-consent-actions">
-                <button class="cookie-btn cookie-btn-settings" id="cookieSettingsBtn">⚙ Preferences</button>
+                <button class="cookie-btn cookie-btn-settings" id="cookieSettingsBtn">âš™ Preferences</button>
                 <button class="cookie-btn cookie-btn-decline" id="cookieDecline">Decline</button>
                 <button class="cookie-btn cookie-btn-accept" id="cookieAccept">Accept All</button>
             </div>
@@ -111,6 +111,8 @@ $active_page = $active_page ?? 'home';
     </div>
 
     <script src="js/particles.js?v=1.0" defer></script>
+    <script src="js/hero-warp.js?v=1.0" defer></script>
+    <script src="js/hero-shapes.js?v=1.0" defer></script>
     <script src="js/script.js?v=2.2" defer></script>
     <script src="js/nav-gsap.js?v=1.0" defer></script>
     <script src="js/animations-gsap.js?v=1.0" defer></script>

@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
- * Gallery / Collection Page — Antique Furniture Workshop
+ * Gallery / Collection Page â€” Antique Furniture Workshop
  * Dynamic version: fetches all gallery items from database
  */
 require_once 'config/database.php';
 
-$page_title = 'The Collection — Antique Furniture Workshop';
+$page_title = 'The Collection â€” Antique Furniture Workshop';
 $page_description = 'Explore our curated selection of restored masterpieces and handcrafted antique furniture. Browse by category.';
 $active_page = 'gallery';
 

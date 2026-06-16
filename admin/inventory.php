@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Admin Inventory Management — Antique Furniture Workshop
+ * Admin Inventory Management â€” Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -56,7 +56,7 @@ if (isset($_GET['edit'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory — Admin</title>
+    <title>Inventory â€” Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -95,7 +95,7 @@ if (isset($_GET['edit'])) {
 
             <?php if ($edit_item): ?>
             <div class="form-card">
-                <h2>Update Inventory — <?php echo htmlspecialchars($edit_item['title']); ?></h2>
+                <h2>Update Inventory â€” <?php echo htmlspecialchars($edit_item['title']); ?></h2>
                 <form method="POST" action="inventory.php">
                     <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $edit_item['id']; ?>">

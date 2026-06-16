@@ -1,0 +1,1 @@
+{"nodes": [{"id": "admin_includes_mailer_afwsendemail", "label": "afw_send_email()", "file_type": "code", "source_file": "admin/includes/mailer.php", "source_location": "line:26", "source_url": null, "captured_at": null, "author": null, "contributor": null}], "edges": [], "hyperedges": []}

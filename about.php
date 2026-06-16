@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
- * About Page — Antique Furniture Workshop
+ * About Page â€” Antique Furniture Workshop
  * Dynamic version: fetches timeline events from database
  */
 require_once 'config/database.php';
 
-$page_title = 'About Us — Antique Furniture Workshop';
+$page_title = 'About Us â€” Antique Furniture Workshop';
 $page_description = 'Learn about our legacy of antique furniture restoration since 1985. Master craftsmen preserving history one piece at a time.';
 $active_page = 'about';
 
@@ -19,19 +19,14 @@ $philosophy = getSetting('philosophy_text', 'We believe restoration is an act of
 require_once 'includes/header.php';
 ?>
 
-    <!-- ==================== ABOUT HERO IMAGE ==================== -->
-    <section style="padding: 70px 20px 0;">
-        <img class="about-hero-image" src="images/about-craftsman.jpg"
-            alt="Master craftsman working on antique furniture" loading="lazy">
-    </section>
-
-    <!-- ==================== LEGACY & CRAFT ==================== -->
-    <section class="philosophy-section fade-up">
-        <h2><em>Legacy<br>& Craft</em></h2>
-
-        <div class="philosophy-block mt-3">
-            <h4>Our Philosophy</h4>
-            <p><?php echo htmlspecialchars($philosophy); ?></p>
+    <!-- ==================== ABOUT HERO â€” Image + Text Overlay ==================== -->
+    <section class="about-hero-overlay">
+        <div class="about-hero-content">
+            <h2><em>Legacy<br>& Craft</em></h2>
+            <div class="philosophy-block">
+                <h4>Our Philosophy</h4>
+                <p><?php echo htmlspecialchars($philosophy); ?></p>
+            </div>
         </div>
     </section>
 

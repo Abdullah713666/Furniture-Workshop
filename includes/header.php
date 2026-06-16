@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /**
- * Shared Header — Antique Furniture Workshop
+ * Shared Header â€” Antique Furniture Workshop
  * 
  * Include this at the top of every public page.
  * Before including, set: $page_title, $page_description, $active_page
@@ -24,6 +24,10 @@ $active_page = $active_page ?? 'home';
     <link rel="stylesheet" href="css/style.css?v=3.5">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/lines/LineGeometry.js" defer></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/lines/LineMaterial.js" defer></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/lines/Line2.js" defer></script>
 </head>
 
 <body>

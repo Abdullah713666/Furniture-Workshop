@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Admin Auth Helper
  * Include this at the top of every admin page (except login.php)
@@ -45,6 +45,6 @@ function afw_ensure_auth_schema(): void {
             $db->exec("ALTER TABLE admin_users ADD COLUMN reset_expires      DATETIME     DEFAULT NULL  AFTER reset_token");
         }
     } catch (Exception $e) {
-        // ignore — if columns truly missing the downstream query will surface a clearer error
+        // ignore â€” if columns truly missing the downstream query will surface a clearer error
     }
 }
