@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Contact Page & Form Handler  Antique Furniture Workshop
  * 
