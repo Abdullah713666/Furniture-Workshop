@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Resend Mailer â€” Antique Furniture Workshop
  *

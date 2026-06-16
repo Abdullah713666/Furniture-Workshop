@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Hub / Index â€” Antique Furniture Workshop
  * Premium landing page for the admin area

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * FAQ Page â€” Antique Furniture Workshop
  * Redesigned with accordion cards, search, and polished layout

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Settings â€” Antique Furniture Workshop
  * Change admin username and password

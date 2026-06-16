@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Particle Background â€” Antique Furniture Workshop
  * Includes the public site's particles.js engine on every admin page.

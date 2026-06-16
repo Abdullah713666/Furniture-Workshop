@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Inventory Management â€” Antique Furniture Workshop
  */

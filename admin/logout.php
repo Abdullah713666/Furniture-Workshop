@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Logout â€” Antique Furniture Workshop
  */

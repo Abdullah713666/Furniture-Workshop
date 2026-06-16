@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Application Initialization — Antique Furniture Workshop
  *

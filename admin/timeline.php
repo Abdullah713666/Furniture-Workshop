@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Timeline CRUD â€” Antique Furniture Workshop
  */

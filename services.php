@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Services Page â€” Antique Furniture Workshop
  * Dynamic version: fetches services from database

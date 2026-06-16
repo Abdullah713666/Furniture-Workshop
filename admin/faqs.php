@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin FAQ CRUD â€” Antique Furniture Workshop
  */

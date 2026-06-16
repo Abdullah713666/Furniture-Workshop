@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Services CRUD â€” Antique Furniture Workshop
  */

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * About Page â€” Antique Furniture Workshop
  * Dynamic version: fetches timeline events from database

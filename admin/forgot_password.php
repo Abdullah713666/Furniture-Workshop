@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Forgot Password â€” Antique Furniture Workshop
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Auth Helper
  * Include this at the top of every admin page (except login.php)

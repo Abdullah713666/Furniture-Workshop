@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Categories CRUD â€” Antique Furniture Workshop
  */

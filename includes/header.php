@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Shared Header â€” Antique Furniture Workshop
  * 

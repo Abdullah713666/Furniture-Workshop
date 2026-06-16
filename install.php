@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Antique Furniture Workshop â€” Database Installer
  * 

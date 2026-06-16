@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Verify Email â€” Antique Furniture Workshop
  *

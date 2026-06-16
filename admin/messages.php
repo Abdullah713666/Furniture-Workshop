@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Messages â€” Antique Furniture Workshop
  */

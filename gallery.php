@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Gallery / Collection Page â€” Antique Furniture Workshop
  * Dynamic version: fetches all gallery items from database

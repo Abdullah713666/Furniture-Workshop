@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Homepage â€” Antique Furniture Workshop
  * Dynamic version: fetches featured pieces from database

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Shared Footer â€” Antique Furniture Workshop
  * 
