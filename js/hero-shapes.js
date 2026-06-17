@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  if (window.innerWidth < 768) return;
+
   var hero = document.querySelector('.hero');
   var container = document.querySelector('.hero-particles');
   var heroBg = document.querySelector('.hero-bg');

@@ -114,17 +114,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     if (empty($message)) {
         if ($id) {
             // Update
-                $stmt = $db->prepare("UPDATE services SET title = ?, description = ?, image_path = ?, alt_text = ?, cta_text = ?, cta_link = ?, display_order = ?, is_active = ? WHERE id = ?");
-                $stmt->execute([$title, $description, $image_path, $alt_text, $cta_text, $cta_link, $display_order, $is_active, $id]);
-                header('Location: services.php?msg=saved');
-                exit;
-            } else {
-                // Insert
-                $stmt = $db->prepare("INSERT INTO services (title, description, image_path, alt_text, cta_text, cta_link, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$title, $description, $image_path, $alt_text, $cta_text, $cta_link, $display_order, $is_active]);
-                header('Location: services.php?msg=saved');
-                exit;
-            }
+            $stmt = $db->prepare("UPDATE services SET title = ?, description = ?, image_path = ?, alt_text = ?, cta_text = ?, cta_link = ?, display_order = ?, is_active = ? WHERE id = ?");
+            $stmt->execute([$title, $description, $image_path, $alt_text, $cta_text, $cta_link, $display_order, $is_active, $id]);
+            header('Location: services.php?msg=saved');
+            exit;
+        } else {
+            // Insert
+            $stmt = $db->prepare("INSERT INTO services (title, description, image_path, alt_text, cta_text, cta_link, display_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $image_path, $alt_text, $cta_text, $cta_link, $display_order, $is_active]);
+            header('Location: services.php?msg=saved');
+            exit;
         }
     }
 }

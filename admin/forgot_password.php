@@ -10,7 +10,7 @@ require_once __DIR__ . '/auth.php';
 
 // Already logged in? Bounce.
 if (isLoggedIn()) {
-    header('Location: dashboard.php?token=' . ($_SESSION['admin_tab_token'] ?? ''));
+    header('Location: dashboard.php');
     exit;
 }
 

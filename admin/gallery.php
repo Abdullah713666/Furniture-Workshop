@@ -109,18 +109,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
 
     if (empty($message)) {
         if ($id) {
-                // Update
-                $stmt = $db->prepare("UPDATE gallery_items SET title = ?, description = ?, category = ?, image_path = ?, alt_text = ?, is_featured = ?, tag = ?, display_order = ? WHERE id = ?");
-                $stmt->execute([$title, $description, $category, $image_path, $alt_text, $is_featured, $tag, $display_order, $id]);
-                header('Location: gallery.php?msg=saved');
-                exit;
-            } else {
-                // Insert
-                $stmt = $db->prepare("INSERT INTO gallery_items (title, description, category, image_path, alt_text, is_featured, tag, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$title, $description, $category, $image_path, $alt_text, $is_featured, $tag, $display_order]);
-                header('Location: gallery.php?msg=saved');
-                exit;
-            }
+            // Update
+            $stmt = $db->prepare("UPDATE gallery_items SET title = ?, description = ?, category = ?, image_path = ?, alt_text = ?, is_featured = ?, tag = ?, display_order = ? WHERE id = ?");
+            $stmt->execute([$title, $description, $category, $image_path, $alt_text, $is_featured, $tag, $display_order, $id]);
+            header('Location: gallery.php?msg=saved');
+            exit;
+        } else {
+            // Insert
+            $stmt = $db->prepare("INSERT INTO gallery_items (title, description, category, image_path, alt_text, is_featured, tag, display_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $description, $category, $image_path, $alt_text, $is_featured, $tag, $display_order]);
+            header('Location: gallery.php?msg=saved');
+            exit;
         }
     }
 }

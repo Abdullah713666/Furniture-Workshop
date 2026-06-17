@@ -64,13 +64,4 @@ $current_admin_page = $current_admin_page ?? 'dashboard';
         </nav>
     </aside>
 
-    <!-- Admin tab session check (sessionStorage is tab-scoped) -->
-    <script>
-    (function() {
-        if (!sessionStorage.getItem('adminTabToken')) {
-            if (window.location.pathname.indexOf('dashboard.php') === -1) {
-                window.location.href = 'logout.php';
-            }
-        }
-    })();
-    </script>
+

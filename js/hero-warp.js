@@ -1,6 +1,8 @@
 (function () {
   'use strict';
 
+  if (window.innerWidth < 768) return;
+
   var heroBg = document.querySelector('.hero-bg');
   var hero = document.querySelector('.hero');
   if (!heroBg || !hero || typeof THREE === 'undefined') return;

@@ -8,7 +8,7 @@
 require_once __DIR__ . '/auth.php';
 
 if (isLoggedIn()) {
-    header('Location: dashboard.php?token=' . ($_SESSION['admin_tab_token'] ?? ''));
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -99,6 +99,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
         }
         .pw-toggle:hover { color: var(--admin-accent, #d4a843); }
         .pw-toggle svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .pw-strength { display: none; margin-top: 6px; }
+        .pw-strength-bar { height: 4px; border-radius: 2px; background: #e0d8cc; overflow: hidden; }
+        .pw-strength-fill { height: 100%; width: 0; border-radius: 2px; transition: width 0.3s, background 0.3s; }
+        .pw-strength-text { font-size: 0.72rem; margin-top: 3px; color: #8a7e6e; }
     </style>
 </head>
 <body>
@@ -120,11 +124,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
                 <div class="form-group">
                     <label for="password">New Password</label>
                     <div class="pw-wrapper">
-                        <input type="password" class="form-control" id="password" name="password" required minlength="8" autofocus>
+                        <input type="password" class="form-control" id="password" name="password" required minlength="8" autofocus oninput="checkPwStrength(this, 'strength-reset')">
                         <button type="button" class="pw-toggle" onclick="togglePw(this, 'password')" aria-label="Toggle password visibility">
                             <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                         </button>
                     </div>
+                    <div id="strength-reset" class="pw-strength"><div class="pw-strength-bar"><div class="pw-strength-fill"></div></div><div class="pw-strength-text"></div></div>
                 </div>
 
                 <div class="form-group">
@@ -156,6 +161,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $valid_token) {
         if (!input) return;
         var isHidden = input.type === 'password';
         input.type = isHidden ? 'text' : 'password';
+    }
+    function checkPwStrength(input, containerId) {
+        var container = document.getElementById(containerId);
+        if (!container) return;
+        var pw = input.value;
+        var fill = container.querySelector('.pw-strength-fill');
+        var text = container.querySelector('.pw-strength-text');
+        if (!pw) { container.style.display = 'none'; return; }
+        container.style.display = 'block';
+        var score = 0;
+        if (pw.length >= 8) score++;
+        if (/[A-Z]/.test(pw)) score++;
+        if (/[a-z]/.test(pw)) score++;
+        if (/[0-9]/.test(pw)) score++;
+        if (/[^A-Za-z0-9]/.test(pw)) score++;
+        var levels = [
+            { min: 0, width: '20%', color: '#dc3545', label: 'Very Weak' },
+            { min: 2, width: '40%', color: '#fd7e14', label: 'Weak' },
+            { min: 3, width: '60%', color: '#ffc107', label: 'Fair' },
+            { min: 4, width: '80%', color: '#20c997', label: 'Good' },
+            { min: 5, width: '100%', color: '#198754', label: 'Strong' }
+        ];
+        var level = levels[0];
+        for (var i = levels.length - 1; i >= 0; i--) {
+            if (score >= levels[i].min) { level = levels[i]; break; }
+        }
+        fill.style.width = level.width;
+        fill.style.background = level.color;
+        text.textContent = level.label;
+        text.style.color = level.color;
     }
     </script>
 <?php require_once __DIR__ . '/includes/particles.php'; ?>

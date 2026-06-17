@@ -111,8 +111,8 @@ $active_page = $active_page ?? 'home';
     </div>
 
     <script src="js/particles.js?v=1.0" defer></script>
-    <script src="js/hero-warp.js?v=1.0" defer></script>
-    <script src="js/hero-shapes.js?v=1.0" defer></script>
+    <script src="js/hero-warp.js?v=2.0" defer></script>
+    <script src="js/hero-shapes.js?v=2.0" defer></script>
     <script src="js/script.js?v=2.2" defer></script>
     <script src="js/nav-gsap.js?v=1.0" defer></script>
     <script src="js/animations-gsap.js?v=1.0" defer></script>
