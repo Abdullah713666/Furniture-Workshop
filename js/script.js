@@ -136,8 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const wordCounterEl = document.getElementById('wordCounter');
   const MAX_WORDS = 250;
 
-  // Word counter
+  // Word counter + warning
   if (detailsField && wordCountEl) {
+    const detailsError = detailsField.parentElement.querySelector('.form-error');
     const updateWordCount = () => {
       const text = detailsField.value.trim();
       const words = text === '' ? 0 : text.split(/\s+/).length;
@@ -145,24 +146,77 @@ document.addEventListener('DOMContentLoaded', () => {
       if (wordCounterEl) {
         wordCounterEl.classList.toggle('over-limit', words > MAX_WORDS);
       }
+      if (words > MAX_WORDS && detailsError) {
+        detailsError.textContent = 'Message must be ' + MAX_WORDS + ' words or less';
+        detailsError.classList.add('visible');
+      } else if (detailsError) {
+        detailsError.textContent = '';
+        detailsError.classList.remove('visible');
+      }
     };
     detailsField.addEventListener('input', updateWordCount);
     updateWordCount();
   }
 
   if (contactForm) {
-    // Apply input filters
+
+    // --- Helper: clear error for a field ---
+    function clearError(fieldName) {
+      const field = contactForm.querySelector(`[name="${fieldName}"]`);
+      if (!field) return;
+      const errorEl = field.parentElement.querySelector('.form-error');
+      if (errorEl) {
+        errorEl.textContent = '';
+        errorEl.classList.remove('visible');
+      }
+    }
+
+    // --- Real-time: Full Name ---
     const nameInput = contactForm.querySelector('[name="fullname"]');
     if (nameInput) {
       nameInput.addEventListener('input', (e) => {
-        // Filter out numbers and special characters from names
-        e.target.value = e.target.value.replace(/[^a-zA-Z\s\.\-]/g, '');
+        const val = e.target.value;
+        const hasInvalid = /[^a-zA-Z\s\.\-]/.test(val);
+        if (hasInvalid) {
+          e.target.value = val.replace(/[^a-zA-Z\s\.\-]/g, '');
+          showError('fullname', 'Numbers and special characters are not allowed');
+        } else {
+          clearError('fullname');
+        }
       });
     }
 
+    // --- Real-time: Email ---
+    const emailInput = contactForm.querySelector('[name="email"]');
+    if (emailInput) {
+      emailInput.addEventListener('blur', () => {
+        const val = emailInput.value.trim();
+        if (val && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          showError('email', 'Please enter a valid email address');
+        } else if (val) {
+          clearError('email');
+        }
+      });
+      emailInput.addEventListener('input', () => {
+        const val = emailInput.value.trim();
+        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          clearError('email');
+        }
+      });
+    }
+
+    // --- Real-time: Phone ---
     const phoneInput = contactForm.querySelector('[name="phone"]');
     if (phoneInput) {
       phoneInput.addEventListener('input', (e) => {
+        const val = e.target.value;
+        const hasLetters = /[a-zA-Z]/.test(val);
+        if (hasLetters) {
+          e.target.value = val.replace(/[a-zA-Z]/g, '');
+          showError('phone', 'Letters are not allowed here');
+        } else {
+          clearError('phone');
+        }
         // Format phone number as (XXX) XXX-XXXX
         let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
         e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
