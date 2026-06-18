@@ -106,22 +106,22 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
                     <h2>From: <?php echo htmlspecialchars($view_message['name']); ?></h2>
                     <span class="badge badge-featured">Inquiry</span>
                 </div>
-                <div class="meta" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px;">
-                    <div class="meta-item">
+                <div class="meta" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Email</span>
-                        <a href="mailto:<?php echo htmlspecialchars($view_message['email']); ?>"><?php echo htmlspecialchars($view_message['email']); ?></a>
+                        <a href="mailto:<?php echo htmlspecialchars($view_message['email']); ?>" style="overflow-wrap: break-word; word-break: break-word;"><?php echo htmlspecialchars($view_message['email']); ?></a>
                     </div>
                     <?php if ($view_message['phone']): ?>
-                    <div class="meta-item">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Phone</span>
                         <?php echo htmlspecialchars($view_message['phone']); ?>
                     </div>
                     <?php endif; ?>
-                    <div class="meta-item">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Service</span>
                         <?php echo htmlspecialchars(ucfirst($view_message['service_interest'])); ?>
                     </div>
-                    <div class="meta-item">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Date</span>
                         <?php echo date('M j, Y \a\t g:i A', strtotime($view_message['submitted_at'])); ?>
                     </div>
