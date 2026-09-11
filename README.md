@@ -31,7 +31,7 @@ A full-stack PHP/MySQL portfolio project for an antique-furniture restoration an
 2. Clone this repository into `htdocs/`.
 3. Import `database.sql` into MySQL using phpMyAdmin or the MySQL client.
 4. Configure the database with environment variables, or use the local XAMPP defaults in `config/database.php`.
-5. Open `http://localhost/antique-furniture-workshop/`.
+5. Open the project through Apache using the folder name you chose under `htdocs/`.
 
 There is intentionally no web-accessible installer in the repository. Database initialization is performed explicitly from `database.sql` instead of exposing a database-creation endpoint.
 
@@ -55,15 +55,15 @@ RECAPTCHA_SECRET_KEY
 
 ## Admin bootstrap
 
-The SQL file contains a demonstration admin record with a bcrypt password hash. For a real deployment, set a unique administrator password before use.
+The public `database.sql` contains the administrator table structure but **does not seed administrator credentials**. This prevents a reusable password or known password hash from being published in source control.
 
-Generate a local hash with PHP:
+After importing the schema, create an administrator locally and generate the password hash with PHP:
 
 ```bash
 php -r 'echo password_hash("YOUR_PASSWORD", PASSWORD_DEFAULT), PHP_EOL;'
 ```
 
-Then update the `admin_users.password_hash` value in the local database before signing in.
+Insert the resulting hash into `admin_users.password_hash` together with your chosen username. Use a unique password for every deployment.
 
 ## Repository layout
 
