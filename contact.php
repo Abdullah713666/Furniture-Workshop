@@ -1,13 +1,13 @@
-﻿<?php
+<?php
 /**
- * Contact Page & Form Handler â€” Antique Furniture Workshop
+ * Contact Page & Form Handler  Antique Furniture Workshop
  * 
- * GET  â†’ Displays the contact page with form + info
- * POST â†’ Validates, sanitizes, logs the form submission, returns JSON/redirect
+ * GET   Displays the contact page with form + info
+ * POST  Validates, sanitizes, logs the form submission, returns JSON/redirect
  */
 require_once 'config/init.php';
 
-// reCAPTCHA keys â€” read from environment, fall back to Google's test keys (localhost only)
+// reCAPTCHA keys  read from environment, fall back to Google's test keys (localhost only)
 // Get your own keys at: https://www.google.com/recaptcha/admin
 // Set RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY in Railway env vars / .env for production.
 define('RECAPTCHA_SITE_KEY',   getenv('RECAPTCHA_SITE_KEY')   ?: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
@@ -149,18 +149,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ============================================================
 // HANDLE GET (display the contact page)
 // ============================================================
-$page_title = 'Contact â€” Antique Furniture Workshop';
+$page_title = 'Contact  Antique Furniture Workshop';
 $page_description = 'Get in touch with our antique furniture restoration workshop. Inquire about restoration, custom commissions, or schedule a consultation.';
 $active_page = 'contact';
 
 // Get settings from DB for contact info
 $db = getDB();
-$phone_number  = getSetting('phone', '+1 (555) 019-2834');
-$email_address = getSetting('email', 'hello@antiqueworkshop.com');
-$address1      = getSetting('address_line1', '123 Heritage Lane');
-$address2      = getSetting('address_line2', 'Craftsmanship City, CA 90210');
-$working_hours = getSetting('working_hours', 'Mon-Fri, 9am - 6pm');
-$map_embed_url = getSetting('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=-0.1378%2C51.5037%2C-0.1069%2C51.5204&layer=mapnik&marker=51.5121%2C-0.1224');
+$phone_number  = getSetting('phone', '');
+$email_address = getSetting('email', 'abdulla257893989@gmail.com');
+$address1      = getSetting('address_line1', 'Sargodha');
+$address2      = getSetting('address_line2', 'Punjab, Pakistan');
+$working_hours = getSetting('working_hours', 'Mon-Sat, 9am - 6pm');
+$map_embed_url = getSetting('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=72.65%2C32.07%2C72.71%2C32.10&layer=mapnik&marker=32.0826%2C72.6796');
 
 require_once 'includes/header.php';
 ?>
@@ -245,10 +245,7 @@ require_once 'includes/header.php';
 
         <!-- Contact Info -->
         <div class="contact-info fade-up">
-            <h2>
-                <span aria-hidden="true" style="font-size:1.2rem;">ðŸ›ï¸</span>
-                Visit the Workshop
-            </h2>
+            <h2>Visit the Workshop</h2>
 
             <div class="contact-detail">
                 <div class="contact-detail-icon">
@@ -263,6 +260,7 @@ require_once 'includes/header.php';
                 </div>
             </div>
 
+            <?php if (!empty($phone_number)): ?>
             <div class="contact-detail">
                 <div class="contact-detail-icon">
                     <svg viewBox="0 0 24 24">
@@ -274,6 +272,7 @@ require_once 'includes/header.php';
                     <p><?php echo htmlspecialchars($working_hours); ?></p>
                 </div>
             </div>
+            <?php endif; ?>
 
             <div class="contact-detail">
                 <div class="contact-detail-icon">

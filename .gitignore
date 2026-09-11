@@ -1,9 +1,25 @@
+# Local/runtime files
+.env
+.env.*
+!.env.example
+*.log
 messages.log
 install.php
 scratch/
-*.html
+data/
+
+# Dependencies / local tooling
 node_modules/
 package.json
 package-lock.json
 optimize-images.mjs
-data/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Test/screenshot artifacts
+test-*.png
+screenshots/

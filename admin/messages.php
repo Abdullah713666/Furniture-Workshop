@@ -1,6 +1,6 @@
-﻿<?php
+<?php
 /**
- * Admin Messages â€” Antique Furniture Workshop
+ * Admin Messages  Antique Furniture Workshop
  */
 require_once 'auth.php';
 requireLogin();
@@ -82,7 +82,7 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages â€” Admin</title>
+    <title>Messages  Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -106,22 +106,22 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
                     <h2>From: <?php echo htmlspecialchars($view_message['name']); ?></h2>
                     <span class="badge badge-featured">Inquiry</span>
                 </div>
-                <div class="meta" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px;">
-                    <div class="meta-item">
+                <div class="meta" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 20px;">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Email</span>
-                        <a href="mailto:<?php echo htmlspecialchars($view_message['email']); ?>"><?php echo htmlspecialchars($view_message['email']); ?></a>
+                        <a href="mailto:<?php echo htmlspecialchars($view_message['email']); ?>" style="overflow-wrap: break-word; word-break: break-word;"><?php echo htmlspecialchars($view_message['email']); ?></a>
                     </div>
                     <?php if ($view_message['phone']): ?>
-                    <div class="meta-item">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Phone</span>
                         <?php echo htmlspecialchars($view_message['phone']); ?>
                     </div>
                     <?php endif; ?>
-                    <div class="meta-item">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Service</span>
                         <?php echo htmlspecialchars(ucfirst($view_message['service_interest'])); ?>
                     </div>
-                    <div class="meta-item">
+                    <div class="meta-item" style="overflow-wrap: break-word; word-break: break-word;">
                         <span style="display:block; font-size:0.75rem; text-transform:uppercase; color:var(--admin-text-muted, #777); font-weight:600;">Date</span>
                         <?php echo date('M j, Y \a\t g:i A', strtotime($view_message['submitted_at'])); ?>
                     </div>
@@ -154,7 +154,7 @@ $unread_count = count(array_filter($submissions, function($s) { return !$s['is_r
                         . '&body=' . urlencode($body);
             ?>
             <div style="display: flex; gap: 8px; margin-bottom: 30px; flex-wrap: wrap;">
-                <a href="messages.php" class="btn btn-outline">â† Back to all messages</a>
+                <a href="messages.php" class="btn btn-outline"> Back to all messages</a>
                 <a href="<?php echo $gmail_url; ?>" target="_blank" rel="noopener" class="btn btn-primary">Reply via Gmail</a>
                 <a href="<?php echo $mailto_url; ?>" class="btn btn-outline">Open in mail app</a>
                 <form method="POST" action="messages.php" style="display:inline;" onsubmit="return confirm('Delete this message?')">
