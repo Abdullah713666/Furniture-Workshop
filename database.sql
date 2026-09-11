@@ -22,15 +22,13 @@ CREATE TABLE IF NOT EXISTS `gallery_items` (
     `price` DECIMAL(10,2) DEFAULT 0.00,
     `quantity` INT DEFAULT 1,
     `sku` VARCHAR(50) DEFAULT '',
-    `status` VARCHAR(20) DEFAULT 'available',
+    `status` VARCHAR(20) NOT NULL DEFAULT 'on_display',
     `item_condition` VARCHAR(50) DEFAULT 'Restored',
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Clean existing data to prevent duplicates on re-install
 TRUNCATE TABLE `gallery_items`;
 
--- Seed: gallery items (each with a unique image)
 INSERT INTO `gallery_items` (`title`, `description`, `category`, `image_path`, `alt_text`, `is_featured`, `tag`, `display_order`) VALUES
 ('Victorian Armchair', 'c. 1870 — Full French polish restoration', 'restoration', 'images/featured-victorian-armchair.jpg', 'Restored Victorian armchair', 1, 'Restored', 1),
 ('Heritage Oak Table', 'Bespoke 12-seat dining table in English oak', 'handcrafted', 'images/featured-oak-table.jpg', 'Handcrafted oak dining table', 1, 'Handcrafted', 2),
@@ -67,10 +65,8 @@ CREATE TABLE IF NOT EXISTS `services` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Clean existing data to prevent duplicates
 TRUNCATE TABLE `services`;
 
--- Seed: services
 INSERT INTO `services` (`title`, `description`, `image_path`, `alt_text`, `icon_svg`, `cta_text`, `cta_link`, `display_order`) VALUES
 ('Antique Restoration', 'Meticulous French polishing, structural repair, and veneer conservation to bring your treasured pieces back to life while respecting their history.', 'images/service-restoration.jpg', 'Antique restoration workshop', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" /></svg>', 'View Details →', 'contact.php', 1),
 ('Custom Commissions', 'Bespoke furniture designed and built to your exact specifications. From initial sketch to final lacquer, we create future heirlooms.', 'images/service-custom.jpg', 'Custom woodworking commission', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" /></svg>', 'Start Project →', 'contact.php', 2),
@@ -88,7 +84,6 @@ CREATE TABLE IF NOT EXISTS `testimonials` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Clean existing data
 TRUNCATE TABLE `testimonials`;
 
 INSERT INTO `testimonials` (`client_name`, `client_title`, `quote`, `is_featured`) VALUES
@@ -108,7 +103,6 @@ CREATE TABLE IF NOT EXISTS `timeline_events` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Clean existing data
 TRUNCATE TABLE `timeline_events`;
 
 INSERT INTO `timeline_events` (`year`, `title`, `description`, `display_order`) VALUES
@@ -139,7 +133,6 @@ CREATE TABLE IF NOT EXISTS `site_settings` (
     `setting_value` TEXT
 ) ENGINE=InnoDB;
 
--- Clean existing data
 TRUNCATE TABLE `site_settings`;
 
 INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
@@ -147,14 +140,14 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 ('site_tagline', 'The Art of Restoration'),
 ('site_description', 'Expert antique furniture restoration, custom commissions, and conservation services. Preserving the past for the future since 1985.'),
 ('phone', ''),
-('email', 'abdulla257893989@gmail.com'),
-('address_line1', 'Sargodha'),
-('address_line2', 'Punjab, Pakistan'),
+('email', ''),
+('address_line1', 'Your workshop address'),
+('address_line2', ''),
 ('working_hours', 'Mon-Sat, 9am - 6pm'),
 ('instagram_url', '#'),
 ('twitter_url', '#'),
 ('copyright_year', '2024'),
-('map_embed_url', 'https://www.openstreetmap.org/export/embed.html?bbox=72.65%2C32.07%2C72.71%2C32.10&layer=mapnik&marker=32.0826%2C72.6796'),
+('map_embed_url', ''),
 ('philosophy_text', 'We believe restoration is an act of preservation—not just of wood and fabric, but of history itself. Every scratch tells a story, every grain holds a memory. Our mission is to honor the original artisan''s hand while breathing new life into timeless pieces.');
 
 -- ============================================================
@@ -163,14 +156,18 @@ INSERT INTO `site_settings` (`setting_key`, `setting_value`) VALUES
 CREATE TABLE IF NOT EXISTS `admin_users` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
     `username` VARCHAR(100) NOT NULL UNIQUE,
+    `email` VARCHAR(255) DEFAULT NULL,
+    `email_verified` TINYINT(1) NOT NULL DEFAULT 0,
+    `verification_token` VARCHAR(64) DEFAULT NULL,
+    `reset_token` VARCHAR(64) DEFAULT NULL,
+    `reset_expires` DATETIME DEFAULT NULL,
     `password_hash` VARCHAR(255) NOT NULL,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Default admin user (password: admin) — CHANGE THIS after first login!
--- Hash generated with password_hash('admin', PASSWORD_BCRYPT)
-INSERT INTO `admin_users` (`username`, `password_hash`) VALUES
-('admin', '$2y$10$NeIsTL7ySYC8fgnzxfSZnOMozF0ewnwE64Vu0uPCzOJF.fPETdoGq');
+-- No administrator credentials are seeded in the public repository.
+-- Create the administrator locally using a bcrypt hash generated with PHP:
+-- php -r 'echo password_hash("YOUR_PASSWORD", PASSWORD_DEFAULT), PHP_EOL;'
 
 -- ============================================================
 -- 8. Site Users (Public Login / Signup)
@@ -199,7 +196,6 @@ CREATE TABLE IF NOT EXISTS `faqs` (
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
--- Clean existing data
 TRUNCATE TABLE `faqs`;
 
 INSERT INTO `faqs` (`question`, `answer`, `display_order`) VALUES
@@ -230,56 +226,4 @@ INSERT IGNORE INTO `categories` (`name`, `slug`, `display_order`) VALUES
 -- ============================================================
 -- 11. Transactions
 -- ============================================================
--- Removed in v3 — this is a portfolio + reservation site, not a shop.
--- Replaced by direct contact-form inquiries (contact_submissions).
--- See MIGRATIONS section below for the DROP.
--- (Table definition kept commented out for historical reference only.)
--- CREATE TABLE IF NOT EXISTS `transactions` (
---     `id` INT AUTO_INCREMENT PRIMARY KEY,
---     `item_id` INT DEFAULT NULL,
---     `item_title` VARCHAR(255) NOT NULL,
---     `buyer_name` VARCHAR(255) NOT NULL,
---     `buyer_email` VARCHAR(255) DEFAULT '',
---     `amount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
---     `payment_method` VARCHAR(50) DEFAULT 'cash',
---     `status` VARCHAR(20) DEFAULT 'completed',
---     `notes` TEXT,
---     `transaction_date` DATETIME DEFAULT CURRENT_TIMESTAMP
--- ) ENGINE=InnoDB;
-
--- ============================================================
--- MIGRATIONS — Idempotent schema upgrades (safe to re-run)
--- ============================================================
--- Each statement is intentionally simple. Re-runs produce "Duplicate
--- column" or "check that column exists" errors which setup.php
--- silently ignores via its error filter.
-
--- Drop dead e-commerce tables
-DROP TABLE IF EXISTS `transactions`;
-DROP TABLE IF EXISTS `users`;
-
--- Add email / verification / reset columns to admin_users
-ALTER TABLE `admin_users` ADD COLUMN `email`              VARCHAR(255) DEFAULT NULL  AFTER `username`;
-ALTER TABLE `admin_users` ADD COLUMN `email_verified`     TINYINT(1)   NOT NULL DEFAULT 0 AFTER `email`;
-ALTER TABLE `admin_users` ADD COLUMN `verification_token` VARCHAR(64)  DEFAULT NULL  AFTER `email_verified`;
-ALTER TABLE `admin_users` ADD COLUMN `reset_token`        VARCHAR(64)  DEFAULT NULL  AFTER `verification_token`;
-ALTER TABLE `admin_users` ADD COLUMN `reset_expires`      DATETIME     DEFAULT NULL  AFTER `reset_token`;
-
--- Backfill the existing 'admin' row with a placeholder email + verified=1
--- (so the current login keeps working without interruption)
-UPDATE `admin_users` SET `email` = 'admin@antiqueworkshop.local', `email_verified` = 1
- WHERE `username` = 'admin' AND (`email` IS NULL OR `email` = '');
-
--- Fix the default admin password hash to match 'admin' (the old hash was wrong)
-UPDATE `admin_users` SET `password_hash` = '$2y$10$NeIsTL7ySYC8fgnzxfSZnOMozF0ewnwE64Vu0uPCzOJF.fPETdoGq'
- WHERE `username` = 'admin';
-
--- Drop e-commerce columns from gallery_items
-ALTER TABLE `gallery_items` DROP COLUMN `quantity`;
-ALTER TABLE `gallery_items` DROP COLUMN `sku`;
-
--- Tighten gallery_items.status to portfolio-relevant values
-ALTER TABLE `gallery_items` MODIFY COLUMN `status` VARCHAR(20) NOT NULL DEFAULT 'on_display';
-
--- Update image paths: .png → .jpg (images were converted to save bandwidth)
-UPDATE `gallery_items` SET `image_path` = REPLACE(`image_path`, '.png', '.jpg') WHERE `image_path` LIKE '%.png';
+-- This project uses contact-form inquiries rather than e-commerce transactions.
